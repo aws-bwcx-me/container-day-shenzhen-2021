@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>/</loc>
+  </url>
+  
+  <url>
+    <loc>/0-prepare.html</loc>
+  </url>
+  
+  <url>
+    <loc>/0-prepare/001-vpc.html</loc>
+  </url>
+  
+  <url>
+    <loc>/0-prepare/002-mgmt.html</loc>
+  </url>
+  
+  <url>
+    <loc>/1-management.html</loc>
+  </url>
+  
+  <url>
+    <loc>/1-management/101-eks.html</loc>
+  </url>
+  
+  <url>
+    <loc>/1-management/102-exposing.html</loc>
+  </url>
+  
+  <url>
+    <loc>/1-management/103-dns.html</loc>
+  </url>
+  
+  <url>
+    <loc>/1-management/104-scaling.html</loc>
+  </url>
+  
+  <url>
+    <loc>/1-management/105-security.html</loc>
+  </url>
+  
+  <url>
+    <loc>/1-management/104-scaling/1-hpa.html</loc>
+  </url>
+  
+  <url>
+    <loc>/1-management/104-scaling/2-cluster-autoscaler.html</loc>
+  </url>
+  
+  <url>
+    <loc>/1-management/101-eks/1-eks-setup.html</loc>
+  </url>
+  
+  <url>
+    <loc>/1-management/101-eks/2-kind-setup.html</loc>
+  </url>
+  
+  <url>
+    <loc>/1-management/102-exposing/1-ingress-lbc.html</loc>
+  </url>
+  
+  <url>
+    <loc>/1-management/103-dns/1-external-dns.html</loc>
+  </url>
+  
+  <url>
+    <loc>/1-management/101-eks/3-velero-app.html</loc>
+  </url>
+  
+  <url>
+    <loc>/1-management/101-eks/4-csi-setup.html</loc>
+  </url>
+  
+  <url>
+    <loc>/1-management/101-eks/5-dms-data.html</loc>
+  </url>
+  
+  <url>
+    <loc>/1-management/105-security/1-acm.html</loc>
+  </url>
+  
+  <url>
+    <loc>/about.html</loc>
+  </url>
+  
+  <url>
+    <loc>/tags/auto-scaling.html</loc>
+  </url>
+  
+  <url>
+    <loc>/categories.html</loc>
+  </url>
+  
+  <url>
+    <loc>/tags/expose.html</loc>
+  </url>
+  
+  <url>
+    <loc>/tags/security.html</loc>
+  </url>
+  
+  <url>
+    <loc>/tags/service.html</loc>
+  </url>
+  
+  <url>
+    <loc>/tags.html</loc>
+  </url>
+  
+</urlset>

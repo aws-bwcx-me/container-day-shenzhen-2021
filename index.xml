@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ContainerLabs on AWS Container Labs</title>
+    <link>/</link>
+    <description>Recent content in ContainerLabs on AWS Container Labs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    
+	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>001-准备基础设施</title>
+      <link>/0-prepare/001-vpc.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/0-prepare/001-vpc.html</guid>
+      <description>这是这个Workshop的第一步，先准备网络和管理工具。
+ 实验描述  本动手实验部署创建VPC，通过使用CloudFormation在实验环境中部署以下内容：
+网络基础
+ 创建一个包含公有、私有子网的VPC 公有子网: 分别位于两个不同的可用区，该子网内的资源会暴露在互联网上，可被用户或客户端直接访问。用于部署NAT Gateway, 堡垒机，ELB负载均衡器等。 私有子网: 分别位于两个不同的可用区，该子网内的资源无法直接被互联网上的用户直接访问。用于部署Web应用服务器，中间件服务，数据库服务等无需直接暴露在互联网上的服务。 多个安全组: 用于控制EKS集群/EC2网络传入和传出流量。 Network ACL: 网络访问控制列表，可用作防火墙来控制进出一个或多个子网的流量。 Cloud9: 云IDE，便于在云上直接管理相关集群。  部署步骤   下载如下的yaml文件到本地操作的电脑客户端     部署VPC的CloudFormation模板文件   infra.yaml (12 )       打开 CloudFormation 控制台，并创建新的堆栈：
+  在“准备模板”部分，保留缺省的“模板已就绪”选项。然后在&amp;quot;模板源&amp;quot;部分，选择&amp;quot;上传模板文件&amp;quot;单选框，点击【选择文件】按钮，并选择第一步中下载的CloudFormation yaml文件。点击【下一步】按钮。 输入以下的相关的参数，并点击【下一步】按钮。
+   堆栈名称：输入ContainerWorkshop    其他选项按照默认即可，点击【下一步】按钮。   在“配置堆栈选项”页面上，保留缺省值，并点击【下一步】按钮。 在“审核”页面上，勾选“我确认，AWS CloudFormation 可能创建具有自定义名称的 IAM 资源。”
+  点击【创建堆栈】按钮，并等待此模板的创建执行完毕，此过程大概约5分钟左右。</description>
+    </item>
+    
+    <item>
+      <title>002-准备管理环境</title>
+      <link>/0-prepare/002-mgmt.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/0-prepare/002-mgmt.html</guid>
+      <description>这是这个Workshop的第二步，准备管理环境。
+ 实验描述  本动手实验基于Cloud9 IDE，安装需要的工具。
+ 安装环境组件  echo &amp;#34;install libs&amp;#34; sudo yum -y install jq gettext bash-completion moreutils 更新 awscli 并配置自动完成  mv /bin/aws /bin/aws1 ls -l /usr/local/bin/aws curl &amp;#34;https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip&amp;#34; -o &amp;#34;awscliv2.zip&amp;#34; unzip awscliv2.zip sudo ./aws/install which aws_completer echo $SHELL cat &amp;gt;&amp;gt; ~/.bash_profile &amp;lt;&amp;lt;EOF complete -C &amp;#39;/usr/local/bin/aws_completer&amp;#39; aws EOF source ~/.bash_profile aws --version 安装 kubectl 并配置自动完成  curl -LO &amp;#34;https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl&amp;#34; sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl cat &amp;gt;&amp;gt; ~/.</description>
+    </item>
+    
+    <item>
+      <title>A-应用水平弹性伸缩</title>
+      <link>/1-management/104-scaling/1-hpa.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/1-management/104-scaling/1-hpa.html</guid>
+      <description>介绍  EKS的弹性伸缩包括两个方面的内容:
+ 一个是水平的 Pod 弹性伸缩（HPA：Horizontal Pod Autoscaler），这是调用K8s的API实现replica配置 一个是集群的 Node 弹性伸缩（CA：Cluster Autoscaler），这是集群层面的垂直弹性伸缩  部署 Metrics Server  参考官网 https://github.com/kubernetes-sigs/metrics-server
+ 安装当前（截止到2021年6月）最新版 0.5.0  kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.5.0/components.yaml 检查安装情况  kubectl get apiservice v1beta1.metrics.k8s.io -o json | jq &#39;.status&#39; 类似输出如下：
+{ &amp;quot;conditions&amp;quot;: [ { &amp;quot;lastTransitionTime&amp;quot;: &amp;quot;2021-06-25T15:15:28Z&amp;quot;, &amp;quot;message&amp;quot;: &amp;quot;all checks passed&amp;quot;, &amp;quot;reason&amp;quot;: &amp;quot;Passed&amp;quot;, &amp;quot;status&amp;quot;: &amp;quot;True&amp;quot;, &amp;quot;type&amp;quot;: &amp;quot;Available&amp;quot; } ] } Pod伸缩(HPA)   准备工作 确认 Metrics Server 部署成功，有数据才能实现 查看是否OK  kubectl top node 如果返回类似如下表示运行正常，可以考虑部署应用测试了</description>
+    </item>
+    
+    <item>
+      <title>B-集群弹性伸缩</title>
+      <link>/1-management/104-scaling/2-cluster-autoscaler.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/1-management/104-scaling/2-cluster-autoscaler.html</guid>
+      <description>我们将结合 kube-ops-view （通过Helm部署，官方地址 ）来实现弹性伸缩的可视化配置的数据源。
+安装kube-ops-view   此处我们使用参数 --set service.type=LoadBalancer 表示把kube-ops-view的入口部署到ELB上（从而避免了必须使用kube-proxy做端口转发）  helm install kube-ops-view \ stable/kube-ops-view \ --set service.type=LoadBalancer \ --set rbac.create=True 查看安装情况  helm list 如果返回类似如下表示部署成功
+NAME NAMESPACE REVISION UPDATED STATUS CHART APP VERSION kube-ops-view default 1 2021-06-25 14:24:03.611338556 +0000 UTC deployed kube-ops-view-1.2.4 20.4.0 查看入口  kubectl get svc kube-ops-view | tail -n 1 | awk &#39;{ print &amp;quot;Kube-ops-view URL = http://&amp;quot;$4 }&#39; 系统会返回类似的结果
+Kube-ops-view URL = http://a368d8f0ea6ab422eabb8445818b09fd-265230446.us-east-1.elb.amazonaws.com 打开其中的 URL（因为此处我们使用了ELB，在创建ELB和传播DNS的时候需要点时间，一般需要1-2分钟左右），会获得一个如下图所示的监控数据页面</description>
+    </item>
+    
+    <item>
+      <title>A-部署EKS集群</title>
+      <link>/1-management/101-eks/1-eks-setup.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/1-management/101-eks/1-eks-setup.html</guid>
+      <description>部署EKS集群  在本节中，您将通过 eksctl 工具创建EKS集群，并添加计算节点。
+安装 eksctl   进入 Cloud9 控制台 https://console.aws.amazon.com/cloud9/home?region=us-east-1 然后打开前面准备阶段创建的IDE环境
+  安装 eksctl 工具
+  curl --silent --location &amp;quot;https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz&amp;quot; | tar xz -C /tmp sudo mv /tmp/eksctl /usr/local/bin eksctl version 配置自动完成  cat &amp;gt;&amp;gt; ~/.bash_profile &amp;lt;&amp;lt;EOF . &amp;lt;(eksctl completion bash) EOF source ~/.bash_profile 创建 EKS 集群   回到CloudFormation 控制台 https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks?filteringStatus=active&amp;amp;filteringText=&amp;amp;viewNested=true&amp;amp;hideStacks=false，找出准备阶段创建的堆栈输出   创建一个集群配置文件 ekscluster.yaml，注意用CloudFormation输出的值，替换VpcId等
+  这里是以 us-east-1 区域作为演示，如果您不是在 us-east-1 运行本实验，请注意替换 region</description>
+    </item>
+    
+    <item>
+      <title>B-部署Kind集群</title>
+      <link>/1-management/101-eks/2-kind-setup.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/1-management/101-eks/2-kind-setup.html</guid>
+      <description>在本模块中，您将利用 Kind 工具，模拟自建一个k8s集群。
+本模块实践过程中，将手动创建一些 iptables 规则，如果您重启了Cloud9实例，则需要重新跑一遍相关命令
+ 创建 Kind 集群   在Cloud9 IDE 中新开一个 terminal 窗口  安装 kind 工具  curl -sLo kind &amp;#34;https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64&amp;#34; sudo install -o root -g root -m 0755 kind /usr/local/bin/kind rm -f ./kind 配置 iptables 规则  echo &amp;#39;net.ipv4.conf.all.route_localnet = 1&amp;#39; | sudo tee /etc/sysctl.conf sudo sysctl -p /etc/sysctl.conf sudo iptables -t nat -A PREROUTING -p tcp -d 169.254.170.2 --dport 80 -j DNAT --to-destination 127.</description>
+    </item>
+    
+    <item>
+      <title>A-Ingress</title>
+      <link>/1-management/102-exposing/1-ingress-lbc.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/1-management/102-exposing/1-ingress-lbc.html</guid>
+      <description>介绍  本章节我们演示如何通过Ingress暴露服务给外部终端用户访问。
+Ingress 是控制前端路由进来到服务的组件。不同于其他的 kube-controller-manager 控制器，Ingress Controller 非系统自带，不会自动安装启动，需要自行安装配置。
+在EKS里面，默认的 Ingress 是 AWS Load Balancer Controller 更多细节见这里
+AWS ALB Ingress Controller 已经更名为 AWS Load Balancer Controller.
+ 针对不同的服务类型，选用不同的组件
+ Ingress： 使用 ALB（Application Load Balancers） Service： 使用 NLB（Network Load Balancers）  ALB 目前支持的功能:
+ host or path based routing TLS (Transport Layer Security) termination, WebSockets HTTP/2 AWS WAF (Web Application Firewall) integration integrated access logs, and health checks  部署 AWS Load Balancer Controller  参考 https://kubernetes-sigs.</description>
+    </item>
+    
+    <item>
+      <title>A-ExternalDNS</title>
+      <link>/1-management/103-dns/1-external-dns.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/1-management/103-dns/1-external-dns.html</guid>
+      <description>介绍  ExternalDNS 使 Kubernetes 资源可以通过公共 DNS 服务器发现。它从 Kubernetes API 中检索资源（服务、入口等）列表，以确定所需的 DNS 记录列表。它本身不是 DNS 服务器，而只是相应地配置其他 DNS 提供商，例如 AWS Route 53。
+官网 https://github.com/kubernetes-sigs/external-dns
+前置条件  一个测试域名 已经完成 102-服务暴露-A-Ingress ，AWS Load Balancer Controller已经安装  部署 ExternalDNS  参考 https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/alb-ingress.md
+ 进入Cloud9 IDE，准备目录和域名变量 请替换 bwcx.tk 为您自己的域名  mkdir ${HOME}/environment/dns cd ${HOME}/environment/dns export DNS_TEST_DOMAIN=&amp;quot;bwcx.tk&amp;quot; 创建 策略  cat &amp;gt; iam-dns-policy.json &amp;lt;&amp;lt;EOF { &amp;quot;Version&amp;quot;: &amp;quot;2012-10-17&amp;quot;, &amp;quot;Statement&amp;quot;: [ { &amp;quot;Effect&amp;quot;: &amp;quot;Allow&amp;quot;, &amp;quot;Action&amp;quot;: [ &amp;quot;route53:ChangeResourceRecordSets&amp;quot; ], &amp;quot;Resource&amp;quot;: [ &amp;quot;arn:aws:route53:::hostedzone/*&amp;quot; ] }, { &amp;quot;Effect&amp;quot;: &amp;quot;Allow&amp;quot;, &amp;quot;Action&amp;quot;: [ &amp;quot;route53:ListHostedZones&amp;quot;, &amp;quot;route53:ListResourceRecordSets&amp;quot; ], &amp;quot;Resource&amp;quot;: [ &amp;quot;*&amp;quot; ] } ] } EOF aws iam create-policy \ --policy-name AllowExternalDNSUpdates \ --policy-document file://iam-dns-policy.</description>
+    </item>
+    
+    <item>
+      <title>C-使用Velero迁移应用</title>
+      <link>/1-management/101-eks/3-velero-app.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/1-management/101-eks/3-velero-app.html</guid>
+      <description>Velero（以前称为Heptio Ark）是一个开源工具，可以安全地备份和还原，执行灾难恢复以及迁移Kubernetes 集群资源和持久卷. 用于：
+ 备份集群并在丢失的情况下进行还原 将集群资源迁移到其他集群 将生产集群复制到开发和测试集群  前置准备   打开 Cloud9 IDE，确保在environment目录下  cd ~/environment 创建用于存储集群备份数据的 S3 桶  美东区域（us-east-1），请用如下命令
+ export VELERO_BUCKET=$(aws s3api create-bucket \ --bucket ekslab-backup-$(date +%s)-$RANDOM \ --region $AWS_REGION \ --| jq -r &#39;.Location&#39; \ --| tr -d /)  如果不是美东区域，请用如下命令
+ export VELERO_BUCKET=$(aws s3api create-bucket \ --bucket ekslab-backup-$(date +%s)-$RANDOM \ --region $AWS_REGION \ --create-bucket-configuration LocationConstraint=$AWS_REGION \ --| jq -r &#39;.Location&#39; \ --| cut -d&#39;/&#39; -f3 \ --| cut -d&#39;.</description>
+    </item>
+    
+    <item>
+      <title>D-(可选)设置CSI存储</title>
+      <link>/1-management/101-eks/4-csi-setup.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/1-management/101-eks/4-csi-setup.html</guid>
+      <description>检查数据    打开 Cloud9 IDE
+  首先查看 kind 集群 postgres 数据
+  kubectl --context kind-kind exec -ti postgres-0 -- psql -U postgres 查询计数器
+select * from importantdata; 可以看到当前已经点击了 12 次
+然后检查 eks 集群 postgres 数据 请先确保默认 context 是 ekslab  kubectl exec -ti postgres-0 -- psql -U postgres 查询计数器
+select * from importantdata; 可以看到当前计数为 0
+检查存储   回顾 kind 集群 pv, pvc, storageclass  kubectl --context kind-kind get pv,pvc,sc 查看 eks 集群 pv, pvc, storageclass  kubectl get pv,pvc,sc 可以看到 velero 针对 aws 自动转换了 storageclass</description>
+    </item>
+    
+    <item>
+      <title>E-使用DMS迁移数据</title>
+      <link>/1-management/101-eks/5-dms-data.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/1-management/101-eks/5-dms-data.html</guid>
+      <description>AWS Database Migration Service (AWS DMS) 是一项云服务，可轻松迁移关系数据库、数据仓库、NoSQL 数据库及其他类型的数据存储。您可以使用。AWSDMS 将您的数据迁移到AWS云，在本地实例之间（通过AWS云设置）或云与本地设置的组合之间。
+配置数据库内网访问    打开 Cloud9 IDE
+  首先配置 kind 集群 postgres
+   准备 NodePort 服务配置文件  cd ${HOME}/environment/counter-kind cat &amp;gt; postgres-nodeport-svc.yaml &amp;lt;&amp;lt;EOF apiVersion: v1 kind: Service metadata: name: postgres-nodeport labels: app: postgres-nodeport spec: type: NodePort ports: - port: 5432 nodePort: 30001 selector: app: postgres EOF 创建新NodePort服务  kubectl --context kind-kind apply -f postgres-nodeport-svc.yaml 检查连接   安装 postgresql 客户端  sudo yum install postgresql -y 尝试连接</description>
+    </item>
+    
+    <item>
+      <title>A-ACM</title>
+      <link>/1-management/105-security/1-acm.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/1-management/105-security/1-acm.html</guid>
+      <description>前置条件  一个测试域名 已经完成 103-DNS集成-A-ExternalDNS ，Route 53 托管区域已经配置  准备证书   进入Cloud9 IDE，配置域名变量 请替换 bwcx.tk 为您自己的域名  export DNS_TEST_DOMAIN=&amp;quot;bwcx.tk&amp;quot;  打开 ACM 控制台 https://console.aws.amazon.com/acm/home?region=us-east-1#/ 依次选择 “预置证书” -&amp;gt; “请求公有证书”
+  在添加域名页面，*.bwcx.tk 填写测试域名
+   验证方法选择 DNS 验证，后面步骤直接跳过，到最后一步点击确认并请求
+  在验证页面，展开配置项，点击在Route 53中创建记录
+  将自动在Route 53 中创建记录 等待1～2分钟左右，自动验证完成，状态变为已颁发  查看详细信息，记录 ARN  将 ARN 配置到变量，方便后续使用  export ACM_TEST_ARN=&amp;lt;ACM ARN&amp;gt; 部署样例应用  下面更新示例应用 2048 game
+ 进入 2048 目录  cd ${HOME}/environment/2048 创建新 ingress 文件  cat &amp;gt; 2048_ingress_dns_acm.</description>
+    </item>
+    
+  </channel>
+</rss>

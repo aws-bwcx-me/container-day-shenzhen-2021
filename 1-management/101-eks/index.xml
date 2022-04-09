@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>101-EKS 迁移实践 on AWS Container Labs</title>
+    <link>/1-management/101-eks.html</link>
+    <description>Recent content in 101-EKS 迁移实践 on AWS Container Labs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    
+	<atom:link href="/1-management/101-eks/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>A-部署EKS集群</title>
+      <link>/1-management/101-eks/1-eks-setup.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/1-management/101-eks/1-eks-setup.html</guid>
+      <description>部署EKS集群  在本节中，您将通过 eksctl 工具创建EKS集群，并添加计算节点。
+安装 eksctl   进入 Cloud9 控制台 https://console.aws.amazon.com/cloud9/home?region=us-east-1 然后打开前面准备阶段创建的IDE环境
+  安装 eksctl 工具
+  curl --silent --location &amp;quot;https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz&amp;quot; | tar xz -C /tmp sudo mv /tmp/eksctl /usr/local/bin eksctl version 配置自动完成  cat &amp;gt;&amp;gt; ~/.bash_profile &amp;lt;&amp;lt;EOF . &amp;lt;(eksctl completion bash) EOF source ~/.bash_profile 创建 EKS 集群   回到CloudFormation 控制台 https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks?filteringStatus=active&amp;amp;filteringText=&amp;amp;viewNested=true&amp;amp;hideStacks=false，找出准备阶段创建的堆栈输出   创建一个集群配置文件 ekscluster.yaml，注意用CloudFormation输出的值，替换VpcId等
+  这里是以 us-east-1 区域作为演示，如果您不是在 us-east-1 运行本实验，请注意替换 region</description>
+    </item>
+    
+    <item>
+      <title>B-部署Kind集群</title>
+      <link>/1-management/101-eks/2-kind-setup.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/1-management/101-eks/2-kind-setup.html</guid>
+      <description>在本模块中，您将利用 Kind 工具，模拟自建一个k8s集群。
+本模块实践过程中，将手动创建一些 iptables 规则，如果您重启了Cloud9实例，则需要重新跑一遍相关命令
+ 创建 Kind 集群   在Cloud9 IDE 中新开一个 terminal 窗口  安装 kind 工具  curl -sLo kind &amp;#34;https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64&amp;#34; sudo install -o root -g root -m 0755 kind /usr/local/bin/kind rm -f ./kind 配置 iptables 规则  echo &amp;#39;net.ipv4.conf.all.route_localnet = 1&amp;#39; | sudo tee /etc/sysctl.conf sudo sysctl -p /etc/sysctl.conf sudo iptables -t nat -A PREROUTING -p tcp -d 169.254.170.2 --dport 80 -j DNAT --to-destination 127.</description>
+    </item>
+    
+    <item>
+      <title>C-使用Velero迁移应用</title>
+      <link>/1-management/101-eks/3-velero-app.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/1-management/101-eks/3-velero-app.html</guid>
+      <description>Velero（以前称为Heptio Ark）是一个开源工具，可以安全地备份和还原，执行灾难恢复以及迁移Kubernetes 集群资源和持久卷. 用于：
+ 备份集群并在丢失的情况下进行还原 将集群资源迁移到其他集群 将生产集群复制到开发和测试集群  前置准备   打开 Cloud9 IDE，确保在environment目录下  cd ~/environment 创建用于存储集群备份数据的 S3 桶  美东区域（us-east-1），请用如下命令
+ export VELERO_BUCKET=$(aws s3api create-bucket \ --bucket ekslab-backup-$(date +%s)-$RANDOM \ --region $AWS_REGION \ --| jq -r &#39;.Location&#39; \ --| tr -d /)  如果不是美东区域，请用如下命令
+ export VELERO_BUCKET=$(aws s3api create-bucket \ --bucket ekslab-backup-$(date +%s)-$RANDOM \ --region $AWS_REGION \ --create-bucket-configuration LocationConstraint=$AWS_REGION \ --| jq -r &#39;.Location&#39; \ --| cut -d&#39;/&#39; -f3 \ --| cut -d&#39;.</description>
+    </item>
+    
+    <item>
+      <title>D-(可选)设置CSI存储</title>
+      <link>/1-management/101-eks/4-csi-setup.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/1-management/101-eks/4-csi-setup.html</guid>
+      <description>检查数据    打开 Cloud9 IDE
+  首先查看 kind 集群 postgres 数据
+  kubectl --context kind-kind exec -ti postgres-0 -- psql -U postgres 查询计数器
+select * from importantdata; 可以看到当前已经点击了 12 次
+然后检查 eks 集群 postgres 数据 请先确保默认 context 是 ekslab  kubectl exec -ti postgres-0 -- psql -U postgres 查询计数器
+select * from importantdata; 可以看到当前计数为 0
+检查存储   回顾 kind 集群 pv, pvc, storageclass  kubectl --context kind-kind get pv,pvc,sc 查看 eks 集群 pv, pvc, storageclass  kubectl get pv,pvc,sc 可以看到 velero 针对 aws 自动转换了 storageclass</description>
+    </item>
+    
+    <item>
+      <title>E-使用DMS迁移数据</title>
+      <link>/1-management/101-eks/5-dms-data.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/1-management/101-eks/5-dms-data.html</guid>
+      <description>AWS Database Migration Service (AWS DMS) 是一项云服务，可轻松迁移关系数据库、数据仓库、NoSQL 数据库及其他类型的数据存储。您可以使用。AWSDMS 将您的数据迁移到AWS云，在本地实例之间（通过AWS云设置）或云与本地设置的组合之间。
+配置数据库内网访问    打开 Cloud9 IDE
+  首先配置 kind 集群 postgres
+   准备 NodePort 服务配置文件  cd ${HOME}/environment/counter-kind cat &amp;gt; postgres-nodeport-svc.yaml &amp;lt;&amp;lt;EOF apiVersion: v1 kind: Service metadata: name: postgres-nodeport labels: app: postgres-nodeport spec: type: NodePort ports: - port: 5432 nodePort: 30001 selector: app: postgres EOF 创建新NodePort服务  kubectl --context kind-kind apply -f postgres-nodeport-svc.yaml 检查连接   安装 postgresql 客户端  sudo yum install postgresql -y 尝试连接</description>
+    </item>
+    
+  </channel>
+</rss>

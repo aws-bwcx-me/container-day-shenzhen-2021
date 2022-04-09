@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="cn" class="js csstransforms3d">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="description" content="AWS Container Labs">
+<meta name="author" content="Weiqiong Chen/Robin Long">
+
+    <link rel="icon" href="../../images/favicon.ico" type="image/png">
+
+    <title>E-使用DMS迁移数据 :: AWS Container Labs</title>
+
+    
+    <link href="../../css/nucleus.css?1649509606" rel="stylesheet">
+    <link href="../../css/fontawesome-all.min.css?1649509606" rel="stylesheet">
+    <link href="../../css/hybrid.css?1649509606" rel="stylesheet">
+    <link href="../../css/featherlight.min.css?1649509606" rel="stylesheet">
+    <link href="../../css/perfect-scrollbar.min.css?1649509606" rel="stylesheet">
+    <link href="../../css/auto-complete.css?1649509606" rel="stylesheet">
+    <link href="../../css/atom-one-dark-reasonable.css?1649509606" rel="stylesheet">
+    <link href="../../css/theme.css?1649509606" rel="stylesheet">
+    <link href="../../css/tabs.css?1649509606" rel="stylesheet">
+    <link href="../../css/hugo-theme.css?1649509606" rel="stylesheet">
+    
+    <link href="../../css/theme-aws.css?1649509606" rel="stylesheet">
+    
+    
+
+    <script src="../../js/jquery-3.3.1.min.js?1649509606"></script>
+
+    <style>
+      :root #header + #content > #left > #rlblock_left{
+          display:none !important;
+      }
+      
+    </style>
+    
+  </head>
+  <body class="" data-url="../../1-management/101-eks/5-dms-data.html">
+    <nav id="sidebar" class="showVisitedLinks">
+
+
+
+  <div id="header-wrapper">
+    <div id="header">
+      <div>
+   <a href="../../" title="Go Index">
+       <img style="vertical-align:middle" src="../../images/logo.png" height="70px" />
+   </a>
+ </div>
+ 
+    </div>
+    
+        <div class="searchbox">
+    <label for="search-by"><i class="fas fa-search"></i></label>
+    <input data-search-input id="search-by" type="search" placeholder="">
+    <span data-search-clear=""><i class="fas fa-times"></i></span>
+</div>
+
+<script type="text/javascript" src="../../js/lunr.min.js?1649509606"></script>
+<script type="text/javascript" src="../../js/auto-complete.js?1649509606"></script>
+<script type="text/javascript">
+    
+        var baseurl = "";
+    
+</script>
+<script type="text/javascript" src="../../js/search.js?1649509606"></script>
+
+    
+  </div>
+  
+    <section id="homelinks">
+      <ul>
+        <li>
+            <a class="padding" href='../../'><i class='fas fa-home'></i> Home</a>
+        </li>
+      </ul>
+    </section>
+  
+
+    <div class="highlightable">
+    <ul class="topics">
+
+        
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/0-prepare.html" title="0-环境准备" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../0-prepare.html">
+          0-环境准备
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/0-prepare/001-vpc.html" title="001-准备基础设施" class="dd-item ">
+        <a href="../../0-prepare/001-vpc.html">
+        001-准备基础设施
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/0-prepare/002-mgmt.html" title="002-准备管理环境" class="dd-item ">
+        <a href="../../0-prepare/002-mgmt.html">
+        002-准备管理环境
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management.html" title="1-Management" class="dd-item
+        parent
+        
+        
+        ">
+      <a href="../../1-management.html">
+          1-Management
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/101-eks.html" title="101-EKS 迁移实践" class="dd-item
+        parent
+        
+        
+        ">
+      <a href="../../1-management/101-eks.html">
+          101-EKS 迁移实践
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/1-eks-setup.html" title="A-部署EKS集群" class="dd-item ">
+        <a href="../../1-management/101-eks/1-eks-setup.html">
+        A-部署EKS集群
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/2-kind-setup.html" title="B-部署Kind集群" class="dd-item ">
+        <a href="../../1-management/101-eks/2-kind-setup.html">
+        B-部署Kind集群
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/3-velero-app.html" title="C-使用Velero迁移应用" class="dd-item ">
+        <a href="../../1-management/101-eks/3-velero-app.html">
+        C-使用Velero迁移应用
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/4-csi-setup.html" title="D-(可选)设置CSI存储" class="dd-item ">
+        <a href="../../1-management/101-eks/4-csi-setup.html">
+        D-(可选)设置CSI存储
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/5-dms-data.html" title="E-使用DMS迁移数据" class="dd-item active">
+        <a href="../../1-management/101-eks/5-dms-data.html">
+        E-使用DMS迁移数据
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/102-exposing.html" title="102-服务暴露" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/102-exposing.html">
+          102-服务暴露
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/102-exposing/1-ingress-lbc.html" title="A-Ingress" class="dd-item ">
+        <a href="../../1-management/102-exposing/1-ingress-lbc.html">
+        A-Ingress
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/103-dns.html" title="103-DNS集成" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/103-dns.html">
+          103-DNS集成
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/103-dns/1-external-dns.html" title="A-ExternalDNS" class="dd-item ">
+        <a href="../../1-management/103-dns/1-external-dns.html">
+        A-ExternalDNS
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/104-scaling.html" title="104-弹性伸缩" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/104-scaling.html">
+          104-弹性伸缩
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/104-scaling/1-hpa.html" title="A-应用水平弹性伸缩" class="dd-item ">
+        <a href="../../1-management/104-scaling/1-hpa.html">
+        A-应用水平弹性伸缩
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/104-scaling/2-cluster-autoscaler.html" title="B-集群弹性伸缩" class="dd-item ">
+        <a href="../../1-management/104-scaling/2-cluster-autoscaler.html">
+        B-集群弹性伸缩
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/105-security.html" title="105-安全防护" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/105-security.html">
+          105-安全防护
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/105-security/1-acm.html" title="A-ACM" class="dd-item ">
+        <a href="../../1-management/105-security/1-acm.html">
+        A-ACM
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/about.html" title="关于我们" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../about.html">
+          关于我们
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+    </li>
+  
+ 
+
+          
+        
+    </ul>
+
+    
+    
+
+    
+    <section id="prefooter">
+      <hr/>
+      <ul>
+      
+
+      
+        <li><a class="padding" href="#" data-clear-history-toggle=""><i class="fas fa-history fa-fw"></i> </a></li>
+      
+      </ul>
+    </section>
+    
+    <section id="footer">
+      <left>
+	<h5 class="copyright">CopyRight: &copy; 2022 bwcx.me.
+		<BR>Author: Weiqiong Chen/Robin Long
+		<BR>Update: 2022-04
+	<h5>
+</left>
+    </section>
+  </div>
+</nav>
+
+
+
+
+        <section id="body">
+        <div id="overlay"></div>
+        <div class="padding highlightable">
+              
+              <div>
+                <div id="top-bar">
+                
+                
+                <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                    <span id="sidebar-toggle-span">
+                        <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+                          <i class="fas fa-bars"></i>
+                        </a>
+                    </span>
+                  
+                  <span id="toc-menu"><i class="fas fa-list-alt"></i></span>
+                  
+                  <span class="links">
+                 
+                 
+                    
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='../../'>ContainerLabs</a> > <a href='../../1-management.html'>1-Management</a> > <a href='../../1-management/101-eks.html'>101-EKS 迁移实践</a> > E-使用DMS迁移数据
+          
+        
+          
+        
+          
+        
+          
+        
+                 
+                  </span>
+                </div>
+                
+                    <div class="progress">
+    <div class="wrapper">
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#配置数据库内网访问">配置数据库内网访问</a></li>
+    <li><a href="#部署dms">部署DMS</a></li>
+    <li><a href="#迁移数据">迁移数据</a></li>
+    <li><a href="#结语">结语</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+                
+              </div>
+            </div>
+            
+        <div id="head-tags">
+        
+        </div>
+        
+        <div id="body-inner">
+          
+            <h1>
+              
+              E-使用DMS迁移数据
+            </h1>
+          
+
+        
+
+
+<p>AWS Database Migration Service (AWS DMS) 是一项云服务，可轻松迁移关系数据库、数据仓库、NoSQL 数据库及其他类型的数据存储。您可以使用。AWSDMS 将您的数据迁移到AWS云，在本地实例之间（通过AWS云设置）或云与本地设置的组合之间。</p>
+<p><img src="../../images/1/101-eks/2021-06-23-19-31-41.png" alt=""></p>
+<h2 id="配置数据库内网访问">配置数据库内网访问</h2>
+<hr>
+<ol>
+<li>
+<p>打开 Cloud9 IDE</p>
+</li>
+<li>
+<p>首先配置 kind 集群 postgres</p>
+</li>
+</ol>
+<ul>
+<li>准备 NodePort 服务配置文件</li>
+</ul>
+<pre><code>cd ${HOME}/environment/counter-kind
+cat &gt; postgres-nodeport-svc.yaml &lt;&lt;EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-nodeport
+  labels:
+    app: postgres-nodeport
+spec:
+  type: NodePort
+  ports:
+  - port: 5432
+    nodePort: 30001
+  selector:
+   app: postgres    
+EOF
+</code></pre><ol start="3">
+<li>创建新NodePort服务</li>
+</ol>
+<pre><code>kubectl --context kind-kind apply -f postgres-nodeport-svc.yaml
+</code></pre><ol start="4">
+<li>检查连接</li>
+</ol>
+<ul>
+<li>安装 postgresql 客户端</li>
+</ul>
+<pre><code>sudo yum install postgresql -y
+</code></pre><p>尝试连接</p>
+<pre><code>psql -h localhost -p 30001 -U postgres
+</code></pre><p>输入密码 <code>supersecret</code></p>
+<ol start="5">
+<li>检查数据</li>
+</ol>
+<pre><code>select * from importantdata;
+</code></pre><p><img src="../../images/1/101-eks/2021-06-23-10-12-13.png" alt=""></p>
+
+<div class="notices warning" ><p>请确保本地能够连接到 kind 集群里的 postgresql，并能成功查询数据后再进入下一步</p>
+</div>
+
+<ol start="6">
+<li>然后配置 eks 集群 postgres</li>
+</ol>
+<ul>
+<li>请先确保当前默认 context 是 ekslab，如果不是请先进行切换</li>
+</ul>
+<pre><code>kubectl config current-context
+</code></pre><ol start="7">
+<li>同样先准备 NodePort 服务配置文件</li>
+</ol>
+<pre><code>cd ${HOME}/environment/counter-eks
+cat &gt; postgres-nodeport-svc.yaml &lt;&lt;EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-nodeport
+  labels:
+    app: postgres-nodeport
+spec:
+  type: NodePort
+  ports:
+  - port: 5432
+    nodePort: 30001
+  selector:
+   app: postgres    
+EOF
+</code></pre>
+<div class="notices info" ><p>这里为了实验方便，手动指定了NodePort 端口为 30001，如果出现端口号被占用，可以指定其他空闲端口号，或者不指定（部署自动生成以后再找出端口号）</p>
+</div>
+
+<ol start="8">
+<li>执行部署</li>
+</ol>
+<pre><code>kubectl apply -f postgres-nodeport-svc.yaml
+</code></pre><ol start="9">
+<li>检查连接和数据</li>
+</ol>
+<ul>
+<li>首先找出 postgres 所在的节点</li>
+</ul>
+<pre><code>kubectl get po postgres-0 -o wide 
+</code></pre><p><img src="../../images/1/101-eks/2021-06-23-10-52-37.png" alt=""></p>
+<ul>
+<li>然后连接到 eks postgres</li>
+</ul>
+<pre><code>psql -h ip-192-168-91-9.ec2.internal -p 30001 -U postgres
+</code></pre><p>输入密码 <code>supersecret</code></p>
+<ul>
+<li>然后查询数据</li>
+</ul>
+<pre><code>select * from importantdata;
+</code></pre><p><img src="../../images/1/101-eks/2021-06-23-11-06-43.png" alt=""></p>
+
+<div class="notices warning" ><p>请确保本地能够连接到 eks 集群里的 postgresql，并能成功查询数据后再进入下一步</p>
+</div>
+
+<h2 id="部署dms">部署DMS</h2>
+<hr>
+<ol>
+<li>
+<p>进入 DMS 控制台“子网组”页面 <a href="https://console.aws.amazon.com/dms/v2/home?region=us-east-1#subnetGroup">https://console.aws.amazon.com/dms/v2/home?region=us-east-1#subnetGroup</a></p>
+</li>
+<li>
+<p>点击 <strong>创建子网组</strong>，填写配置参数</p>
+</li>
+</ol>
+<ul>
+<li>名称：<code>eks-dms-subnet-group</code></li>
+<li>描述：<code>subnet group for eks lab</code></li>
+<li>VPC：选择准备阶段创建的labs-eks-VPC</li>
+<li>添加子网：选择2个私有子网</li>
+</ul>
+<p><img src="../../images/1/101-eks/2021-06-23-11-39-49.png" alt=""></p>
+<ol start="3">
+<li>
+<p>填完参数后，点击 <strong>创建子网组</strong></p>
+</li>
+<li>
+<p>进入 DMS 控制台“复制实例”页面 <a href="https://console.aws.amazon.com/dms/v2/home?region=us-east-1#replicationInstances">https://console.aws.amazon.com/dms/v2/home?region=us-east-1#replicationInstances</a></p>
+</li>
+<li>
+<p>点击 <strong>创建复制实例</strong>，填写配置参数</p>
+</li>
+</ol>
+<ul>
+<li>名称：<code>postgres-kind-2-eks</code></li>
+<li>VPC：选择准备阶段创建的labs-eks-VPC并取消“公开访问”
+<img src="../../images/1/101-eks/2021-06-23-11-28-59.png" alt=""></li>
+<li>展开<strong>高级安全和网络配置</strong>，选择前面创建的子网组，并添加2个安全组 <code>ControlPlaneSecurityGroup</code> 和 <code>SharedNodeSecurityGroup</code></li>
+</ul>
+<p><img src="../../images/1/101-eks/2021-06-23-11-44-54.png" alt=""></p>
+<ol start="6">
+<li>
+<p>填完参数后，点击 <strong>创建</strong></p>
+</li>
+<li>
+<p>进入 DMS 控制台“终端节点”页面 <a href="https://console.aws.amazon.com/dms/v2/home?region=us-east-1#endpointList">https://console.aws.amazon.com/dms/v2/home?region=us-east-1#endpointList</a></p>
+</li>
+<li>
+<p>点击 <strong>创建终端节点</strong>，选择 <strong>源终端节点</strong>，准备创建数据复制来源（kind）连接</p>
+</li>
+<li>
+<p>填写来源终端参数后，点击<strong>创建终端节点</strong></p>
+</li>
+</ol>
+<ul>
+<li>终端节点标识符：<code>postgres-kind</code></li>
+<li>源引擎：PostgreSQL</li>
+<li>手动提供访问信息：
+<ul>
+<li>服务器名称 Cloud9 实例的内网IP，可以通过控制台查看，或用命令 <code>curl http://169.254.169.254/latest/meta-data/local-ipv4</code>，例如 192.168.62.38</li>
+<li>端口 <code>30001</code></li>
+<li>用户名 <code>postgres</code></li>
+<li>密码 <code>supersecret</code></li>
+<li>数据库名称 <code>postgres</code></li>
+</ul>
+</li>
+</ul>
+<p><img src="../../images/1/101-eks/2021-06-23-13-22-51.png" alt=""></p>
+<ol start="10">
+<li>
+<p>再次点击 <strong>创建终端节点</strong>，选择 <strong>目标终端节点</strong>，准备创建数据复制目标（eks）连接</p>
+</li>
+<li>
+<p>填写目标终端参数后，点击<strong>创建终端节点</strong></p>
+</li>
+</ol>
+<ul>
+<li>终端节点标识符：<code>postgres-eks</code></li>
+<li>目标引擎：PostgreSQL</li>
+<li>手动提供访问信息：
+<ul>
+<li>服务器名称是运行 postgres pod 的工作节点内网IP (注意是IP，不是DNS)，例如 192.168.91.9，可以通过命令查找 <code>kubectl describe po postgres-0 | grep Node</code>
+<img src="../../images/1/101-eks/2021-06-23-13-28-35.png" alt=""></li>
+<li>端口 <code>30001</code></li>
+<li>用户名 <code>postgres</code></li>
+<li>密码 <code>supersecret</code></li>
+<li>数据库名称 <code>postgres</code></li>
+</ul>
+</li>
+</ul>
+<p><img src="../../images/1/101-eks/2021-06-23-13-31-10.png" alt=""></p>
+<ol start="12">
+<li>测试连接</li>
+</ol>
+<ul>
+<li>首先请确保复制实例 postgres-kind-2-eks 状态为 <strong>可用</strong></li>
+</ul>
+<p><img src="../../images/1/101-eks/2021-06-23-13-41-15.png" alt=""></p>
+<ul>
+<li>两个终端节点状态也都为 <strong>可用</strong></li>
+</ul>
+<p><img src="../../images/1/101-eks/2021-06-23-13-35-18.png" alt=""></p>
+<ul>
+<li>首先验证<strong>源</strong>连接，点击 postgres-kind，选择<strong>连接</strong> tab 页，再点击<strong>测试连接</strong></li>
+</ul>
+<p><img src="../../images/1/101-eks/2021-06-23-13-37-15.png" alt=""></p>
+<ul>
+<li>选择之前创建的复制实例 postgres-kind-2-eks，然后<strong>运行测试</strong>，确保状态为 <strong>successful</strong></li>
+</ul>
+<p><img src="../../images/1/101-eks/2021-06-23-13-38-41.png" alt=""></p>
+<ul>
+<li>重复步骤，选择 postgres-eks 终端，<strong>运行测试</strong>，确保状态为 <strong>successful</strong></li>
+</ul>
+<p><img src="../../images/1/101-eks/2021-06-23-13-43-48.png" alt=""></p>
+
+<div class="notices warning" ><p>请确保2个终端节点连接测试，状态都为<strong>successful</strong>才进入下一步</p>
+</div>
+
+<h2 id="迁移数据">迁移数据</h2>
+<hr>
+<ol>
+<li>
+<p>进入 DMS 控制台“数据库迁移任务”页面 <a href="https://console.aws.amazon.com/dms/v2/home?region=us-east-1#tasks">https://console.aws.amazon.com/dms/v2/home?region=us-east-1#tasks</a></p>
+</li>
+<li>
+<p>点击<strong>创建任务</strong>，配置任务参数</p>
+</li>
+</ol>
+<ul>
+<li>任务标识符：<code>migrate-2-eks</code></li>
+<li>复制实例：postgres-kind-2-eks</li>
+<li>源数据库终端节点：postgres-kind</li>
+<li>目标数据库终端节点：postgres-eks</li>
+<li>迁移类型：迁移现有数据并复制正在进行的更改</li>
+</ul>
+<p><img src="../../images/1/101-eks/2021-06-23-13-50-04.png" alt=""></p>
+<ol start="3">
+<li>任务设置里勾选**<em>启用 CloudWatch 日志</em></li>
+</ol>
+<p><img src="../../images/1/101-eks/2021-06-23-14-07-52.png" alt=""></p>
+<ol start="4">
+<li>配置复制规则，展开“表映像”-&gt;“选择规则”，点击“添加新选择规则”，勾选“输入架构”</li>
+</ol>
+<p><img src="../../images/1/101-eks/2021-06-23-13-54-33.png" alt=""></p>
+<ol start="5">
+<li>
+<p>其他参数保持默认，点击<strong>创建任务</strong></p>
+</li>
+<li>
+<p>检查任务执行情况</p>
+</li>
+</ol>
+<p><img src="../../images/1/101-eks/2021-06-23-16-00-27.png" alt=""></p>
+<p>当进度为100%时，进入下一步。</p>
+<p>如果出现问题，可以进入详情页，然后查看日志</p>
+<p><img src="../../images/1/101-eks/2021-06-23-16-01-46.png" alt=""></p>
+<ol start="7">
+<li>浏览器打开EKS ELB 地址</li>
+</ol>
+<p><img src="../../images/1/101-eks/2021-06-23-16-04-38.png" alt=""></p>
+<p>可以看到此时原来在Kind集群的计数统计已经同步过来</p>
+<ol start="8">
+<li>CDC 同步测试，因为我们在前面的步骤中，复制任务模式是<strong>完全加载，持续复制</strong>，kind源库的增量数据也会同步到eks目标库</li>
+</ol>
+<ul>
+<li>打开两个浏览器窗口，左边是 kind 集群的服务，右边是eks 集群的服务</li>
+<li>在左边点击<strong>count++</strong> 按钮，然后在右边点击浏览器<strong>刷新</strong>按钮</li>
+</ul>
+<p><img src="../../images/1/101-eks/2021-06-23-16-09-42.png" alt=""></p>
+<p>可以看到增量数据已经由DMS自动同步过去</p>
+<ol start="9">
+<li>本 workshop 仅为演示方便，因而前面的步骤直接将迁移到eks的服务发布到外网，方便查看计数。
+真实场景下，应是测试验证OK后，选择迁移窗口，应用和数据都迁移完成了，再停掉老集群，切换新集群对外提供服务。</li>
+</ol>
+<h2 id="结语">结语</h2>
+<hr>
+<p>恭喜！ 您已经完成了 Workshop。</p>
+
+
+<footer class="footline">
+	
+</footer>
+
+        
+        </div>
+        
+
+      </div>
+
+    <div id="navigation">
+        
+        
+
+        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+
+        
+
+
+	 
+	 
+		
+			<a class="nav nav-prev" href="../../1-management/101-eks/4-csi-setup.html" title="D-(可选)设置CSI存储"> <i class="fa fa-chevron-left"></i></a>
+		
+		
+			<a class="nav nav-next" href="../../1-management/102-exposing.html" title="102-服务暴露" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+		
+	
+    </div>
+
+    </section>
+
+    <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+      <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+    </div>
+    <script src="../../js/clipboard.min.js?1649509606"></script>
+    <script src="../../js/perfect-scrollbar.min.js?1649509606"></script>
+    <script src="../../js/perfect-scrollbar.jquery.min.js?1649509606"></script>
+    <script src="../../js/jquery.sticky.js?1649509606"></script>
+    <script src="../../js/featherlight.min.js?1649509606"></script>
+    <script src="../../js/highlight.pack.js?1649509606"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="../../js/modernizr.custom-3.6.0.js?1649509606"></script>
+    <script src="../../js/learn.js?1649509606"></script>
+    <script src="../../js/hugo-learn.js?1649509606"></script>
+    
+        
+            <script src="../../mermaid/mermaid.js?1649509606"></script>
+        
+        <script>
+            mermaid.initialize({ startOnLoad: true });
+        </script>
+    
+    
+
+  </body>
+</html>
+

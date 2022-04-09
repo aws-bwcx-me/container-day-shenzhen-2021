@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="cn" class="js csstransforms3d">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="description" content="AWS Container Labs">
+<meta name="author" content="Weiqiong Chen/Robin Long">
+
+    <link rel="icon" href="../../images/favicon.ico" type="image/png">
+
+    <title>D-(可选)设置CSI存储 :: AWS Container Labs</title>
+
+    
+    <link href="../../css/nucleus.css?1649509606" rel="stylesheet">
+    <link href="../../css/fontawesome-all.min.css?1649509606" rel="stylesheet">
+    <link href="../../css/hybrid.css?1649509606" rel="stylesheet">
+    <link href="../../css/featherlight.min.css?1649509606" rel="stylesheet">
+    <link href="../../css/perfect-scrollbar.min.css?1649509606" rel="stylesheet">
+    <link href="../../css/auto-complete.css?1649509606" rel="stylesheet">
+    <link href="../../css/atom-one-dark-reasonable.css?1649509606" rel="stylesheet">
+    <link href="../../css/theme.css?1649509606" rel="stylesheet">
+    <link href="../../css/tabs.css?1649509606" rel="stylesheet">
+    <link href="../../css/hugo-theme.css?1649509606" rel="stylesheet">
+    
+    <link href="../../css/theme-aws.css?1649509606" rel="stylesheet">
+    
+    
+
+    <script src="../../js/jquery-3.3.1.min.js?1649509606"></script>
+
+    <style>
+      :root #header + #content > #left > #rlblock_left{
+          display:none !important;
+      }
+      
+    </style>
+    
+  </head>
+  <body class="" data-url="../../1-management/101-eks/4-csi-setup.html">
+    <nav id="sidebar" class="showVisitedLinks">
+
+
+
+  <div id="header-wrapper">
+    <div id="header">
+      <div>
+   <a href="../../" title="Go Index">
+       <img style="vertical-align:middle" src="../../images/logo.png" height="70px" />
+   </a>
+ </div>
+ 
+    </div>
+    
+        <div class="searchbox">
+    <label for="search-by"><i class="fas fa-search"></i></label>
+    <input data-search-input id="search-by" type="search" placeholder="">
+    <span data-search-clear=""><i class="fas fa-times"></i></span>
+</div>
+
+<script type="text/javascript" src="../../js/lunr.min.js?1649509606"></script>
+<script type="text/javascript" src="../../js/auto-complete.js?1649509606"></script>
+<script type="text/javascript">
+    
+        var baseurl = "";
+    
+</script>
+<script type="text/javascript" src="../../js/search.js?1649509606"></script>
+
+    
+  </div>
+  
+    <section id="homelinks">
+      <ul>
+        <li>
+            <a class="padding" href='../../'><i class='fas fa-home'></i> Home</a>
+        </li>
+      </ul>
+    </section>
+  
+
+    <div class="highlightable">
+    <ul class="topics">
+
+        
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/0-prepare.html" title="0-环境准备" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../0-prepare.html">
+          0-环境准备
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/0-prepare/001-vpc.html" title="001-准备基础设施" class="dd-item ">
+        <a href="../../0-prepare/001-vpc.html">
+        001-准备基础设施
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/0-prepare/002-mgmt.html" title="002-准备管理环境" class="dd-item ">
+        <a href="../../0-prepare/002-mgmt.html">
+        002-准备管理环境
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management.html" title="1-Management" class="dd-item
+        parent
+        
+        
+        ">
+      <a href="../../1-management.html">
+          1-Management
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/101-eks.html" title="101-EKS 迁移实践" class="dd-item
+        parent
+        
+        
+        ">
+      <a href="../../1-management/101-eks.html">
+          101-EKS 迁移实践
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/1-eks-setup.html" title="A-部署EKS集群" class="dd-item ">
+        <a href="../../1-management/101-eks/1-eks-setup.html">
+        A-部署EKS集群
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/2-kind-setup.html" title="B-部署Kind集群" class="dd-item ">
+        <a href="../../1-management/101-eks/2-kind-setup.html">
+        B-部署Kind集群
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/3-velero-app.html" title="C-使用Velero迁移应用" class="dd-item ">
+        <a href="../../1-management/101-eks/3-velero-app.html">
+        C-使用Velero迁移应用
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/4-csi-setup.html" title="D-(可选)设置CSI存储" class="dd-item active">
+        <a href="../../1-management/101-eks/4-csi-setup.html">
+        D-(可选)设置CSI存储
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/5-dms-data.html" title="E-使用DMS迁移数据" class="dd-item ">
+        <a href="../../1-management/101-eks/5-dms-data.html">
+        E-使用DMS迁移数据
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/102-exposing.html" title="102-服务暴露" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/102-exposing.html">
+          102-服务暴露
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/102-exposing/1-ingress-lbc.html" title="A-Ingress" class="dd-item ">
+        <a href="../../1-management/102-exposing/1-ingress-lbc.html">
+        A-Ingress
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/103-dns.html" title="103-DNS集成" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/103-dns.html">
+          103-DNS集成
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/103-dns/1-external-dns.html" title="A-ExternalDNS" class="dd-item ">
+        <a href="../../1-management/103-dns/1-external-dns.html">
+        A-ExternalDNS
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/104-scaling.html" title="104-弹性伸缩" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/104-scaling.html">
+          104-弹性伸缩
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/104-scaling/1-hpa.html" title="A-应用水平弹性伸缩" class="dd-item ">
+        <a href="../../1-management/104-scaling/1-hpa.html">
+        A-应用水平弹性伸缩
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/104-scaling/2-cluster-autoscaler.html" title="B-集群弹性伸缩" class="dd-item ">
+        <a href="../../1-management/104-scaling/2-cluster-autoscaler.html">
+        B-集群弹性伸缩
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/105-security.html" title="105-安全防护" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/105-security.html">
+          105-安全防护
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/105-security/1-acm.html" title="A-ACM" class="dd-item ">
+        <a href="../../1-management/105-security/1-acm.html">
+        A-ACM
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/about.html" title="关于我们" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../about.html">
+          关于我们
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+    </li>
+  
+ 
+
+          
+        
+    </ul>
+
+    
+    
+
+    
+    <section id="prefooter">
+      <hr/>
+      <ul>
+      
+
+      
+        <li><a class="padding" href="#" data-clear-history-toggle=""><i class="fas fa-history fa-fw"></i> </a></li>
+      
+      </ul>
+    </section>
+    
+    <section id="footer">
+      <left>
+	<h5 class="copyright">CopyRight: &copy; 2022 bwcx.me.
+		<BR>Author: Weiqiong Chen/Robin Long
+		<BR>Update: 2022-04
+	<h5>
+</left>
+    </section>
+  </div>
+</nav>
+
+
+
+
+        <section id="body">
+        <div id="overlay"></div>
+        <div class="padding highlightable">
+              
+              <div>
+                <div id="top-bar">
+                
+                
+                <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                    <span id="sidebar-toggle-span">
+                        <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+                          <i class="fas fa-bars"></i>
+                        </a>
+                    </span>
+                  
+                  <span id="toc-menu"><i class="fas fa-list-alt"></i></span>
+                  
+                  <span class="links">
+                 
+                 
+                    
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='../../'>ContainerLabs</a> > <a href='../../1-management.html'>1-Management</a> > <a href='../../1-management/101-eks.html'>101-EKS 迁移实践</a> > D-(可选)设置CSI存储
+          
+        
+          
+        
+          
+        
+          
+        
+                 
+                  </span>
+                </div>
+                
+                    <div class="progress">
+    <div class="wrapper">
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#检查数据">检查数据</a></li>
+    <li><a href="#检查存储">检查存储</a></li>
+    <li><a href="#构建新-amazon-ebs-csi">构建新 Amazon EBS CSI</a></li>
+    <li><a href="#deploy-the-amazon-ebs-csi-driver">Deploy the Amazon EBS CSI Driver</a></li>
+    <li><a href="#重新部署-postgres">重新部署 postgres</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+                
+              </div>
+            </div>
+            
+        <div id="head-tags">
+        
+        </div>
+        
+        <div id="body-inner">
+          
+            <h1>
+              
+              D-(可选)设置CSI存储
+            </h1>
+          
+
+        
+
+
+<h2 id="检查数据">检查数据</h2>
+<hr>
+<ol>
+<li>
+<p>打开 Cloud9 IDE</p>
+</li>
+<li>
+<p>首先查看 kind 集群 postgres 数据</p>
+</li>
+</ol>
+<pre><code>kubectl --context kind-kind exec -ti postgres-0 -- psql -U postgres
+</code></pre><p>查询计数器</p>
+<pre><code>select * from importantdata;
+</code></pre><p><img src="../../images/1/101-eks/2021-06-22-22-13-54.png" alt=""></p>
+<p>可以看到当前已经点击了 <strong>12</strong> 次</p>
+<ol start="3">
+<li>然后检查 eks 集群 postgres 数据
+请先确保默认 context 是 ekslab</li>
+</ol>
+<pre><code>kubectl exec -ti postgres-0 -- psql -U postgres
+</code></pre><p>查询计数器</p>
+<pre><code>select * from importantdata;
+</code></pre><p><img src="../../images/1/101-eks/2021-06-22-22-16-33.png" alt=""></p>
+<p>可以看到当前计数为 <strong>0</strong></p>
+<h2 id="检查存储">检查存储</h2>
+<hr>
+<ol>
+<li>回顾 kind 集群 pv, pvc, storageclass</li>
+</ol>
+<pre><code>kubectl --context kind-kind get pv,pvc,sc
+</code></pre><p><img src="../../images/1/101-eks/2021-06-22-22-23-15.png" alt=""></p>
+<ol start="2">
+<li>查看 eks 集群 pv, pvc, storageclass</li>
+</ol>
+<pre><code>kubectl get pv,pvc,sc
+</code></pre><p><img src="../../images/1/101-eks/2021-06-22-22-26-18.png" alt=""></p>
+<p>可以看到 velero 针对 aws 自动转换了 storageclass</p>
+<ol start="3">
+<li>查看 storageclass 明细</li>
+</ol>
+<pre><code>kubectl describe sc gp2
+</code></pre><p><img src="../../images/1/101-eks/2021-06-22-22-29-08.png" alt=""></p>
+<ol start="4">
+<li>当前 velero 版本还是采用的 <strong>In-tree EBS plugin</strong></li>
+</ol>
+<ul>
+<li>In-tree EBS plugin <a href="https://docs.aws.amazon.com/zh_cn/eks/latest/userguide/storage-classes.html">https://docs.aws.amazon.com/zh_cn/eks/latest/userguide/storage-classes.html</a></li>
+<li>2021-05月，Amazon EBS已经支持 CSI 参考
+<a href="https://aws.amazon.com/about-aws/whats-new/2021/05/amazon-ebs-container-storage-interface-driver-is-now-generally-available/">https://aws.amazon.com/about-aws/whats-new/2021/05/amazon-ebs-container-storage-interface-driver-is-now-generally-available/</a></li>
+</ul>
+<h2 id="构建新-amazon-ebs-csi">构建新 Amazon EBS CSI</h2>
+<hr>
+<p>参考 <a href="https://github.com/kubernetes-sigs/aws-ebs-csi-driver">https://github.com/kubernetes-sigs/aws-ebs-csi-driver</a></p>
+<ol>
+<li>配置 IAM Policy</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">export EBS_CSI_POLICY_NAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Amazon_EBS_CSI_Driver&#34;</span>
+
+mkdir <span style="color:#e6db74">${</span>HOME<span style="color:#e6db74">}</span>/environment/ebs_statefulset
+cd <span style="color:#e6db74">${</span>HOME<span style="color:#e6db74">}</span>/environment/ebs_statefulset
+
+<span style="color:#75715e"># download the IAM policy document</span>
+curl -sSL -o ebs-csi-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-ebs-csi-driver/master/docs/example-iam-policy.json
+
+<span style="color:#75715e"># Create the IAM policy</span>
+aws iam create-policy <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --region <span style="color:#e6db74">${</span>AWS_REGION<span style="color:#e6db74">}</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --policy-name <span style="color:#e6db74">${</span>EBS_CSI_POLICY_NAME<span style="color:#e6db74">}</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --policy-document file://<span style="color:#e6db74">${</span>HOME<span style="color:#e6db74">}</span>/environment/ebs_statefulset/ebs-csi-policy.json
+
+<span style="color:#75715e"># export the policy ARN as a variable</span>
+export EBS_CSI_POLICY_ARN<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>aws --region <span style="color:#e6db74">${</span>AWS_REGION<span style="color:#e6db74">}</span> iam list-policies --query <span style="color:#e6db74">&#39;Policies[?PolicyName==`&#39;</span>$EBS_CSI_POLICY_NAME<span style="color:#e6db74">&#39;`].Arn&#39;</span> --output text<span style="color:#66d9ef">)</span>
+</code></pre></div><ol start="2">
+<li>为Service Account配置 IAM Role</li>
+</ol>
+<ul>
+<li>通过 <code>eksctl</code> 工具来关联身份提供商和创建SA</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># Create an IAM OIDC provider for your cluster</span>
+eksctl utils associate-iam-oidc-provider <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --region<span style="color:#f92672">=</span>$AWS_REGION <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --cluster<span style="color:#f92672">=</span>ekslab <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --approve
+
+<span style="color:#75715e"># Create a service account</span>
+eksctl create iamserviceaccount <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --cluster ekslab <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --name ebs-csi-controller-irsa <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --namespace kube-system <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --attach-policy-arn $EBS_CSI_POLICY_ARN <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --override-existing-serviceaccounts <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --approve
+</code></pre></div><ol start="3">
+<li>检查身份关联，打开IAM控制台 <a href="https://console.aws.amazon.com/iamv2/home#/identity_providers">https://console.aws.amazon.com/iamv2/home#/identity_providers</a></li>
+</ol>
+<p><img src="../../images/1/101-eks/2021-06-22-22-57-31.png" alt=""></p>
+<ol start="4">
+<li>部署 Amazon EBS CSI Driver</li>
+</ol>
+<h2 id="deploy-the-amazon-ebs-csi-driver">Deploy the Amazon EBS CSI Driver</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># add the aws-ebs-csi-driver as a helm repo</span>
+helm repo add aws-ebs-csi-driver https://kubernetes-sigs.github.io/aws-ebs-csi-driver
+helm repo update
+<span style="color:#75715e"># search for the driver</span>
+helm search repo aws-ebs-csi-driver
+</code></pre></div><p>当前最新driver版本为1.1.0，helm chart 版本为1.2.3
+<img src="../../images/1/101-eks/2021-06-22-22-59-41.png" alt=""></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">helm upgrade --install aws-ebs-csi-driver <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --version<span style="color:#f92672">=</span>1.2.3 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --namespace kube-system <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --set serviceAccount.controller.create<span style="color:#f92672">=</span>false <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --set serviceAccount.snapshot.create<span style="color:#f92672">=</span>false <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --set enableVolumeScheduling<span style="color:#f92672">=</span>true <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --set enableVolumeResizing<span style="color:#f92672">=</span>true <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --set enableVolumeSnapshot<span style="color:#f92672">=</span>true <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --set serviceAccount.snapshot.name<span style="color:#f92672">=</span>ebs-csi-controller-irsa <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --set serviceAccount.controller.name<span style="color:#f92672">=</span>ebs-csi-controller-irsa <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --set Value.node.tolerateAllTaints<span style="color:#f92672">=</span>true <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  aws-ebs-csi-driver/aws-ebs-csi-driver
+</code></pre></div><ol start="5">
+<li>检查部署</li>
+</ol>
+<pre><code>helm ls -n kube-system
+kubectl -n kube-system rollout status deployment ebs-csi-controller
+kubectl get pod -n kube-system -l &quot;app.kubernetes.io/name=aws-ebs-csi-driver,app.kubernetes.io/instance=aws-ebs-csi-driver&quot;
+</code></pre><p><img src="../../images/1/101-eks/2021-06-22-23-04-49.png" alt=""></p>
+<ol start="6">
+<li>创建新 Storage Class</li>
+</ol>
+<ul>
+<li>准备 storageclass 配置文件</li>
+</ul>
+<pre><code>cat &lt;&lt; EoF &gt; ${HOME}/environment/ebs_statefulset/csi-storageclass.yaml
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: csi-gp2
+provisioner: ebs.csi.aws.com # Amazon EBS CSI driver
+parameters:
+  type: gp2
+  encrypted: 'true' # EBS volumes will always be encrypted by default
+volumeBindingMode: WaitForFirstConsumer # EBS volumes are AZ specific
+reclaimPolicy: Delete
+mountOptions:
+- debug
+EoF
+</code></pre><ul>
+<li>执行命令</li>
+</ul>
+<pre><code>kubectl apply -f ${HOME}/environment/ebs_statefulset/csi-storageclass.yaml
+</code></pre><ol start="7">
+<li>设置为默认 storageclass</li>
+</ol>
+<pre><code>kubectl patch storageclass csi-gp2 -p '{&quot;metadata&quot;: {&quot;annotations&quot;:{&quot;storageclass.kubernetes.io/is-default-class&quot;:&quot;true&quot;}}}' 
+</code></pre><ol start="8">
+<li>检查新创建的 storageclass</li>
+</ol>
+<pre><code>kubectl describe storageclass csi-gp2
+</code></pre><p><img src="../../images/1/101-eks/2021-06-22-23-13-15.png" alt=""></p>
+<h2 id="重新部署-postgres">重新部署 postgres</h2>
+<hr>
+<ol>
+<li>在浏览器打开新计数器页面，点击一次（方便后续对比）</li>
+</ol>
+<p><img src="../../images/1/101-eks/2021-06-22-23-26-49.png" alt=""></p>
+<ol start="2">
+<li>准备新的 pvc</li>
+</ol>
+<pre><code>cd ${HOME}/environment/counter-eks
+cat &gt; postgres-pv-claim-new.yaml &lt;&lt;EOF
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: postgres-pv-claim-new
+  labels:
+    app: postgres
+spec:
+  storageClassName: csi-gp2
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+EOF
+</code></pre><ol start="3">
+<li>准备新 postgres statefulset 文件</li>
+</ol>
+<pre><code>cat &gt; postgres-statefulset-new.yaml &lt;&lt;EOF
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  serviceName: postgres
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+        - name: postgres
+          image: postgres:13
+          imagePullPolicy: &quot;IfNotPresent&quot;
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: postgres-config
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgredb
+              subPath: postgres
+            - mountPath: /docker-entrypoint-initdb.d
+              name: init
+          resources:
+            requests:
+              memory: &quot;64Mi&quot;
+              cpu: &quot;250m&quot;
+            limits:
+              memory: &quot;128Mi&quot;
+              cpu: &quot;500m&quot;
+      volumes:
+        - name: postgredb
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim-new
+        - name: init
+          configMap:
+            name: postgres-config
+            items:
+            - key: init
+              path: init.sql
+EOF
+</code></pre><ol start="4">
+<li>导出当前 postgres statefulset YAML文件，然后删除</li>
+</ol>
+<pre><code>kubectl get statefulset postgres -o yaml &gt; postgres-statefulset.yaml
+</code></pre><p>执行删除</p>
+<pre><code>kubectl delete -f postgres-statefulset.yaml
+</code></pre><ol start="5">
+<li>重新部署 postgres statefulset</li>
+</ol>
+<pre><code>kubectl apply -f postgres-pv-claim-new.yaml
+kubectl apply -f postgres-statefulset-new.yaml
+</code></pre><ol start="6">
+<li>确认部署</li>
+</ol>
+<pre><code>kubectl get po
+</code></pre><p>确保都处于 running 状态
+<img src="../../images/1/101-eks/2021-06-23-00-11-03.png" alt=""></p>
+<ol start="7">
+<li>刷新浏览器页面</li>
+</ol>
+<p><img src="../../images/1/101-eks/2021-06-23-00-11-29.png" alt=""></p>
+<p>重置存储后，计数器复归为0</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+
+
+<footer class="footline">
+	
+</footer>
+
+        
+        </div>
+        
+
+      </div>
+
+    <div id="navigation">
+        
+        
+
+        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+
+        
+
+
+	 
+	 
+		
+			<a class="nav nav-prev" href="../../1-management/101-eks/3-velero-app.html" title="C-使用Velero迁移应用"> <i class="fa fa-chevron-left"></i></a>
+		
+		
+			<a class="nav nav-next" href="../../1-management/101-eks/5-dms-data.html" title="E-使用DMS迁移数据" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+		
+	
+    </div>
+
+    </section>
+
+    <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+      <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+    </div>
+    <script src="../../js/clipboard.min.js?1649509606"></script>
+    <script src="../../js/perfect-scrollbar.min.js?1649509606"></script>
+    <script src="../../js/perfect-scrollbar.jquery.min.js?1649509606"></script>
+    <script src="../../js/jquery.sticky.js?1649509606"></script>
+    <script src="../../js/featherlight.min.js?1649509606"></script>
+    <script src="../../js/highlight.pack.js?1649509606"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="../../js/modernizr.custom-3.6.0.js?1649509606"></script>
+    <script src="../../js/learn.js?1649509606"></script>
+    <script src="../../js/hugo-learn.js?1649509606"></script>
+    
+        
+            <script src="../../mermaid/mermaid.js?1649509606"></script>
+        
+        <script>
+            mermaid.initialize({ startOnLoad: true });
+        </script>
+    
+    
+
+  </body>
+</html>
+

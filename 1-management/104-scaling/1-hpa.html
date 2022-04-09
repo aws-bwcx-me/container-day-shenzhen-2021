@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="cn" class="js csstransforms3d">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="description" content="AWS Container Labs">
+<meta name="author" content="Weiqiong Chen/Robin Long">
+
+    <link rel="icon" href="../../images/favicon.ico" type="image/png">
+
+    <title>A-应用水平弹性伸缩 :: AWS Container Labs</title>
+
+    
+    <link href="../../css/nucleus.css?1649509606" rel="stylesheet">
+    <link href="../../css/fontawesome-all.min.css?1649509606" rel="stylesheet">
+    <link href="../../css/hybrid.css?1649509606" rel="stylesheet">
+    <link href="../../css/featherlight.min.css?1649509606" rel="stylesheet">
+    <link href="../../css/perfect-scrollbar.min.css?1649509606" rel="stylesheet">
+    <link href="../../css/auto-complete.css?1649509606" rel="stylesheet">
+    <link href="../../css/atom-one-dark-reasonable.css?1649509606" rel="stylesheet">
+    <link href="../../css/theme.css?1649509606" rel="stylesheet">
+    <link href="../../css/tabs.css?1649509606" rel="stylesheet">
+    <link href="../../css/hugo-theme.css?1649509606" rel="stylesheet">
+    
+    <link href="../../css/theme-aws.css?1649509606" rel="stylesheet">
+    
+    
+
+    <script src="../../js/jquery-3.3.1.min.js?1649509606"></script>
+
+    <style>
+      :root #header + #content > #left > #rlblock_left{
+          display:none !important;
+      }
+      
+    </style>
+    
+  </head>
+  <body class="" data-url="../../1-management/104-scaling/1-hpa.html">
+    <nav id="sidebar" class="showVisitedLinks">
+
+
+
+  <div id="header-wrapper">
+    <div id="header">
+      <div>
+   <a href="../../" title="Go Index">
+       <img style="vertical-align:middle" src="../../images/logo.png" height="70px" />
+   </a>
+ </div>
+ 
+    </div>
+    
+        <div class="searchbox">
+    <label for="search-by"><i class="fas fa-search"></i></label>
+    <input data-search-input id="search-by" type="search" placeholder="">
+    <span data-search-clear=""><i class="fas fa-times"></i></span>
+</div>
+
+<script type="text/javascript" src="../../js/lunr.min.js?1649509606"></script>
+<script type="text/javascript" src="../../js/auto-complete.js?1649509606"></script>
+<script type="text/javascript">
+    
+        var baseurl = "";
+    
+</script>
+<script type="text/javascript" src="../../js/search.js?1649509606"></script>
+
+    
+  </div>
+  
+    <section id="homelinks">
+      <ul>
+        <li>
+            <a class="padding" href='../../'><i class='fas fa-home'></i> Home</a>
+        </li>
+      </ul>
+    </section>
+  
+
+    <div class="highlightable">
+    <ul class="topics">
+
+        
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/0-prepare.html" title="0-环境准备" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../0-prepare.html">
+          0-环境准备
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/0-prepare/001-vpc.html" title="001-准备基础设施" class="dd-item ">
+        <a href="../../0-prepare/001-vpc.html">
+        001-准备基础设施
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/0-prepare/002-mgmt.html" title="002-准备管理环境" class="dd-item ">
+        <a href="../../0-prepare/002-mgmt.html">
+        002-准备管理环境
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management.html" title="1-Management" class="dd-item
+        parent
+        
+        
+        ">
+      <a href="../../1-management.html">
+          1-Management
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/101-eks.html" title="101-EKS 迁移实践" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/101-eks.html">
+          101-EKS 迁移实践
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/1-eks-setup.html" title="A-部署EKS集群" class="dd-item ">
+        <a href="../../1-management/101-eks/1-eks-setup.html">
+        A-部署EKS集群
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/2-kind-setup.html" title="B-部署Kind集群" class="dd-item ">
+        <a href="../../1-management/101-eks/2-kind-setup.html">
+        B-部署Kind集群
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/3-velero-app.html" title="C-使用Velero迁移应用" class="dd-item ">
+        <a href="../../1-management/101-eks/3-velero-app.html">
+        C-使用Velero迁移应用
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/4-csi-setup.html" title="D-(可选)设置CSI存储" class="dd-item ">
+        <a href="../../1-management/101-eks/4-csi-setup.html">
+        D-(可选)设置CSI存储
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/5-dms-data.html" title="E-使用DMS迁移数据" class="dd-item ">
+        <a href="../../1-management/101-eks/5-dms-data.html">
+        E-使用DMS迁移数据
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/102-exposing.html" title="102-服务暴露" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/102-exposing.html">
+          102-服务暴露
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/102-exposing/1-ingress-lbc.html" title="A-Ingress" class="dd-item ">
+        <a href="../../1-management/102-exposing/1-ingress-lbc.html">
+        A-Ingress
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/103-dns.html" title="103-DNS集成" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/103-dns.html">
+          103-DNS集成
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/103-dns/1-external-dns.html" title="A-ExternalDNS" class="dd-item ">
+        <a href="../../1-management/103-dns/1-external-dns.html">
+        A-ExternalDNS
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/104-scaling.html" title="104-弹性伸缩" class="dd-item
+        parent
+        
+        
+        ">
+      <a href="../../1-management/104-scaling.html">
+          104-弹性伸缩
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/104-scaling/1-hpa.html" title="A-应用水平弹性伸缩" class="dd-item active">
+        <a href="../../1-management/104-scaling/1-hpa.html">
+        A-应用水平弹性伸缩
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/104-scaling/2-cluster-autoscaler.html" title="B-集群弹性伸缩" class="dd-item ">
+        <a href="../../1-management/104-scaling/2-cluster-autoscaler.html">
+        B-集群弹性伸缩
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/105-security.html" title="105-安全防护" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/105-security.html">
+          105-安全防护
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/105-security/1-acm.html" title="A-ACM" class="dd-item ">
+        <a href="../../1-management/105-security/1-acm.html">
+        A-ACM
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/about.html" title="关于我们" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../about.html">
+          关于我们
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+    </li>
+  
+ 
+
+          
+        
+    </ul>
+
+    
+    
+
+    
+    <section id="prefooter">
+      <hr/>
+      <ul>
+      
+
+      
+        <li><a class="padding" href="#" data-clear-history-toggle=""><i class="fas fa-history fa-fw"></i> </a></li>
+      
+      </ul>
+    </section>
+    
+    <section id="footer">
+      <left>
+	<h5 class="copyright">CopyRight: &copy; 2022 bwcx.me.
+		<BR>Author: Weiqiong Chen/Robin Long
+		<BR>Update: 2022-04
+	<h5>
+</left>
+    </section>
+  </div>
+</nav>
+
+
+
+
+        <section id="body">
+        <div id="overlay"></div>
+        <div class="padding highlightable">
+              
+              <div>
+                <div id="top-bar">
+                
+                
+                <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                    <span id="sidebar-toggle-span">
+                        <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+                          <i class="fas fa-bars"></i>
+                        </a>
+                    </span>
+                  
+                  <span id="toc-menu"><i class="fas fa-list-alt"></i></span>
+                  
+                  <span class="links">
+                 
+                 
+                    
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='../../'>ContainerLabs</a> > <a href='../../1-management.html'>1-Management</a> > <a href='../../1-management/104-scaling.html'>104-弹性伸缩</a> > A-应用水平弹性伸缩
+          
+        
+          
+        
+          
+        
+          
+        
+                 
+                  </span>
+                </div>
+                
+                    <div class="progress">
+    <div class="wrapper">
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#介绍">介绍</a></li>
+    <li><a href="#部署-metrics-server">部署 Metrics Server</a></li>
+    <li><a href="#pod伸缩hpa">Pod伸缩(HPA)</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+                
+              </div>
+            </div>
+            
+        <div id="head-tags">
+        
+<div class="tags">
+
+  <a class="tag-link" href="../../tags/auto-scaling">Auto Scaling</a>
+
+</div>
+
+        </div>
+        
+        <div id="body-inner">
+          
+            <h1>
+              
+              A-应用水平弹性伸缩
+            </h1>
+          
+
+        
+
+
+<h2 id="介绍">介绍</h2>
+<hr>
+<p>EKS的弹性伸缩包括两个方面的内容:</p>
+<ul>
+<li>一个是水平的 Pod 弹性伸缩（HPA：Horizontal Pod Autoscaler），这是调用K8s的API实现replica配置</li>
+<li>一个是集群的 Node 弹性伸缩（CA：Cluster Autoscaler），这是集群层面的垂直弹性伸缩</li>
+</ul>
+<h2 id="部署-metrics-server">部署 Metrics Server</h2>
+<hr>
+<p>参考官网 <a href="https://github.com/kubernetes-sigs/metrics-server">https://github.com/kubernetes-sigs/metrics-server</a></p>
+<ol>
+<li>安装当前（截止到2021年6月）最新版 0.5.0</li>
+</ol>
+<pre><code>kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.5.0/components.yaml
+</code></pre><ol start="2">
+<li>检查安装情况</li>
+</ol>
+<pre><code>kubectl get apiservice v1beta1.metrics.k8s.io -o json | jq '.status'
+</code></pre><p>类似输出如下：</p>
+<pre><code>{
+  &quot;conditions&quot;: [
+    {
+      &quot;lastTransitionTime&quot;: &quot;2021-06-25T15:15:28Z&quot;,
+      &quot;message&quot;: &quot;all checks passed&quot;,
+      &quot;reason&quot;: &quot;Passed&quot;,
+      &quot;status&quot;: &quot;True&quot;,
+      &quot;type&quot;: &quot;Available&quot;
+    }
+  ]
+}
+</code></pre><h2 id="pod伸缩hpa">Pod伸缩(HPA)</h2>
+<hr>
+<ol>
+<li>准备工作
+确认 Metrics Server 部署成功，有数据才能实现
+查看是否OK</li>
+</ol>
+<pre><code>kubectl top node
+</code></pre><p>如果返回类似如下表示运行正常，可以考虑部署应用测试了</p>
+<pre><code>NAME                             CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%   
+ip-192-168-115-52.ec2.internal   157m         8%     1068Mi          15%       
+ip-192-168-39-196.ec2.internal   43m          2%     517Mi           7%        
+ip-192-168-80-184.ec2.internal   76m          3%     743Mi           10%      
+</code></pre><ol start="2">
+<li>部署测试环境</li>
+</ol>
+<p>我们部署一个apache</p>
+<pre><code>kubectl create deployment php-apache --image=us.gcr.io/k8s-artifacts-prod/hpa-example
+kubectl set resources deploy php-apache --requests=cpu=200m
+kubectl expose deploy php-apache --port 80
+
+kubectl get pod -l app=php-apache
+</code></pre><p>设定cpu超过50%就扩容</p>
+<pre><code>kubectl autoscale deployment php-apache `#The target average CPU utilization` \
+    --cpu-percent=50 \
+    --min=1 `#The lower limit for the number of pods that can be set by the autoscaler` \
+    --max=10 `#The upper limit for the number of pods that can be set by the autoscaler`
+</code></pre><p>查看状态</p>
+<pre><code>kubectl get hpa
+</code></pre><p>类似输出如下</p>
+<pre><code>NAME         REFERENCE               TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+php-apache   Deployment/php-apache   &lt;unknown&gt;/50%   1         10        0          5s
+</code></pre><p>大概过上1-2分钟，再次执行<code>kubectl get hpa</code>，我们就会发现 <code>&lt;unknown&gt;/50%</code> 变成了 <code>0%/50%</code> 。</p>
+<pre><code>NAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+php-apache   Deployment/php-apache   0%/50%    1         10        1          73s
+</code></pre><ol start="3">
+<li>人为加压</li>
+</ol>
+<p>借助开源的 apache ab 工具</p>
+<pre><code>kubectl run apache-bench -ti --image=httpd --rm -- ab -n 300000 -c 1000 http://php-apache/
+</code></pre>
+<div class="notices note" ><p>注意不要漏掉 http://php-apache/ 最后的 <strong>/</strong></p>
+</div>
+
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>另开一个窗口，查看加压情况</p>
+<pre><code>kubectl get hpa -w
+</code></pre><p>发现：</p>
+<ul>
+<li>负载上来后，逐步扩容，直到最大Pod数10</li>
+<li>模拟加压停止后，再慢慢缩回</li>
+</ul>
+<pre><code>NAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+php-apache   Deployment/php-apache   0%/50%    1         10        1          72s
+php-apache   Deployment/php-apache   242%/50%   1         10        1          77s
+php-apache   Deployment/php-apache   937%/50%   1         10        4          93s
+php-apache   Deployment/php-apache   431%/50%   1         10        8          108s
+php-apache   Deployment/php-apache   189%/50%   1         10        10         2m3s
+php-apache   Deployment/php-apache   190%/50%   1         10        10         2m19s
+php-apache   Deployment/php-apache   185%/50%   1         10        10         2m34s
+php-apache   Deployment/php-apache   186%/50%   1         10        10         2m50s
+php-apache   Deployment/php-apache   174%/50%   1         10        10         3m5s
+php-apache   Deployment/php-apache   64%/50%    1         10        10         3m21s
+php-apache   Deployment/php-apache   100%/50%   1         10        10         3m35s
+php-apache   Deployment/php-apache   96%/50%    1         10        10         3m51s
+php-apache   Deployment/php-apache   94%/50%    1         10        10         4m5s
+php-apache   Deployment/php-apache   47%/50%    1         10        10         4m21s
+php-apache   Deployment/php-apache   0%/50%     1         10        10         4m35s
+</code></pre><ol start="4">
+<li>清理应用</li>
+</ol>
+<p>通过如下方式清除刚才的水平扩容测试应用</p>
+<pre><code>kubectl delete hpa,svc php-apache
+kubectl delete deployment php-apache
+</code></pre>
+
+<footer class="footline">
+	
+</footer>
+
+        
+        </div>
+        
+
+      </div>
+
+    <div id="navigation">
+        
+        
+
+        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+
+        
+
+
+	 
+	 
+		
+			<a class="nav nav-prev" href="../../1-management/104-scaling.html" title="104-弹性伸缩"> <i class="fa fa-chevron-left"></i></a>
+		
+		
+			<a class="nav nav-next" href="../../1-management/104-scaling/2-cluster-autoscaler.html" title="B-集群弹性伸缩" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+		
+	
+    </div>
+
+    </section>
+
+    <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+      <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+    </div>
+    <script src="../../js/clipboard.min.js?1649509606"></script>
+    <script src="../../js/perfect-scrollbar.min.js?1649509606"></script>
+    <script src="../../js/perfect-scrollbar.jquery.min.js?1649509606"></script>
+    <script src="../../js/jquery.sticky.js?1649509606"></script>
+    <script src="../../js/featherlight.min.js?1649509606"></script>
+    <script src="../../js/highlight.pack.js?1649509606"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="../../js/modernizr.custom-3.6.0.js?1649509606"></script>
+    <script src="../../js/learn.js?1649509606"></script>
+    <script src="../../js/hugo-learn.js?1649509606"></script>
+    
+        
+            <script src="../../mermaid/mermaid.js?1649509606"></script>
+        
+        <script>
+            mermaid.initialize({ startOnLoad: true });
+        </script>
+    
+    
+
+  </body>
+</html>
+

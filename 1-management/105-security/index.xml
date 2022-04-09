@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>105-安全防护 on AWS Container Labs</title>
+    <link>/1-management/105-security.html</link>
+    <description>Recent content in 105-安全防护 on AWS Container Labs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    
+	<atom:link href="/1-management/105-security/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>A-ACM</title>
+      <link>/1-management/105-security/1-acm.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/1-management/105-security/1-acm.html</guid>
+      <description>前置条件  一个测试域名 已经完成 103-DNS集成-A-ExternalDNS ，Route 53 托管区域已经配置  准备证书   进入Cloud9 IDE，配置域名变量 请替换 bwcx.tk 为您自己的域名  export DNS_TEST_DOMAIN=&amp;quot;bwcx.tk&amp;quot;  打开 ACM 控制台 https://console.aws.amazon.com/acm/home?region=us-east-1#/ 依次选择 “预置证书” -&amp;gt; “请求公有证书”
+  在添加域名页面，*.bwcx.tk 填写测试域名
+   验证方法选择 DNS 验证，后面步骤直接跳过，到最后一步点击确认并请求
+  在验证页面，展开配置项，点击在Route 53中创建记录
+  将自动在Route 53 中创建记录 等待1～2分钟左右，自动验证完成，状态变为已颁发  查看详细信息，记录 ARN  将 ARN 配置到变量，方便后续使用  export ACM_TEST_ARN=&amp;lt;ACM ARN&amp;gt; 部署样例应用  下面更新示例应用 2048 game
+ 进入 2048 目录  cd ${HOME}/environment/2048 创建新 ingress 文件  cat &amp;gt; 2048_ingress_dns_acm.</description>
+    </item>
+    
+  </channel>
+</rss>

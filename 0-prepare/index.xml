@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>0-环境准备 on AWS Container Labs</title>
+    <link>/0-prepare.html</link>
+    <description>Recent content in 0-环境准备 on AWS Container Labs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    
+	<atom:link href="/0-prepare/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>001-准备基础设施</title>
+      <link>/0-prepare/001-vpc.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/0-prepare/001-vpc.html</guid>
+      <description>这是这个Workshop的第一步，先准备网络和管理工具。
+ 实验描述  本动手实验部署创建VPC，通过使用CloudFormation在实验环境中部署以下内容：
+网络基础
+ 创建一个包含公有、私有子网的VPC 公有子网: 分别位于两个不同的可用区，该子网内的资源会暴露在互联网上，可被用户或客户端直接访问。用于部署NAT Gateway, 堡垒机，ELB负载均衡器等。 私有子网: 分别位于两个不同的可用区，该子网内的资源无法直接被互联网上的用户直接访问。用于部署Web应用服务器，中间件服务，数据库服务等无需直接暴露在互联网上的服务。 多个安全组: 用于控制EKS集群/EC2网络传入和传出流量。 Network ACL: 网络访问控制列表，可用作防火墙来控制进出一个或多个子网的流量。 Cloud9: 云IDE，便于在云上直接管理相关集群。  部署步骤   下载如下的yaml文件到本地操作的电脑客户端     部署VPC的CloudFormation模板文件   infra.yaml (12 )       打开 CloudFormation 控制台，并创建新的堆栈：
+  在“准备模板”部分，保留缺省的“模板已就绪”选项。然后在&amp;quot;模板源&amp;quot;部分，选择&amp;quot;上传模板文件&amp;quot;单选框，点击【选择文件】按钮，并选择第一步中下载的CloudFormation yaml文件。点击【下一步】按钮。 输入以下的相关的参数，并点击【下一步】按钮。
+   堆栈名称：输入ContainerWorkshop    其他选项按照默认即可，点击【下一步】按钮。   在“配置堆栈选项”页面上，保留缺省值，并点击【下一步】按钮。 在“审核”页面上，勾选“我确认，AWS CloudFormation 可能创建具有自定义名称的 IAM 资源。”
+  点击【创建堆栈】按钮，并等待此模板的创建执行完毕，此过程大概约5分钟左右。</description>
+    </item>
+    
+    <item>
+      <title>002-准备管理环境</title>
+      <link>/0-prepare/002-mgmt.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/0-prepare/002-mgmt.html</guid>
+      <description>这是这个Workshop的第二步，准备管理环境。
+ 实验描述  本动手实验基于Cloud9 IDE，安装需要的工具。
+ 安装环境组件  echo &amp;#34;install libs&amp;#34; sudo yum -y install jq gettext bash-completion moreutils 更新 awscli 并配置自动完成  mv /bin/aws /bin/aws1 ls -l /usr/local/bin/aws curl &amp;#34;https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip&amp;#34; -o &amp;#34;awscliv2.zip&amp;#34; unzip awscliv2.zip sudo ./aws/install which aws_completer echo $SHELL cat &amp;gt;&amp;gt; ~/.bash_profile &amp;lt;&amp;lt;EOF complete -C &amp;#39;/usr/local/bin/aws_completer&amp;#39; aws EOF source ~/.bash_profile aws --version 安装 kubectl 并配置自动完成  curl -LO &amp;#34;https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl&amp;#34; sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl cat &amp;gt;&amp;gt; ~/.</description>
+    </item>
+    
+  </channel>
+</rss>

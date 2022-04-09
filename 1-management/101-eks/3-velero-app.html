@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="cn" class="js csstransforms3d">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="description" content="AWS Container Labs">
+<meta name="author" content="Weiqiong Chen/Robin Long">
+
+    <link rel="icon" href="../../images/favicon.ico" type="image/png">
+
+    <title>C-使用Velero迁移应用 :: AWS Container Labs</title>
+
+    
+    <link href="../../css/nucleus.css?1649509606" rel="stylesheet">
+    <link href="../../css/fontawesome-all.min.css?1649509606" rel="stylesheet">
+    <link href="../../css/hybrid.css?1649509606" rel="stylesheet">
+    <link href="../../css/featherlight.min.css?1649509606" rel="stylesheet">
+    <link href="../../css/perfect-scrollbar.min.css?1649509606" rel="stylesheet">
+    <link href="../../css/auto-complete.css?1649509606" rel="stylesheet">
+    <link href="../../css/atom-one-dark-reasonable.css?1649509606" rel="stylesheet">
+    <link href="../../css/theme.css?1649509606" rel="stylesheet">
+    <link href="../../css/tabs.css?1649509606" rel="stylesheet">
+    <link href="../../css/hugo-theme.css?1649509606" rel="stylesheet">
+    
+    <link href="../../css/theme-aws.css?1649509606" rel="stylesheet">
+    
+    
+
+    <script src="../../js/jquery-3.3.1.min.js?1649509606"></script>
+
+    <style>
+      :root #header + #content > #left > #rlblock_left{
+          display:none !important;
+      }
+      
+    </style>
+    
+  </head>
+  <body class="" data-url="../../1-management/101-eks/3-velero-app.html">
+    <nav id="sidebar" class="showVisitedLinks">
+
+
+
+  <div id="header-wrapper">
+    <div id="header">
+      <div>
+   <a href="../../" title="Go Index">
+       <img style="vertical-align:middle" src="../../images/logo.png" height="70px" />
+   </a>
+ </div>
+ 
+    </div>
+    
+        <div class="searchbox">
+    <label for="search-by"><i class="fas fa-search"></i></label>
+    <input data-search-input id="search-by" type="search" placeholder="">
+    <span data-search-clear=""><i class="fas fa-times"></i></span>
+</div>
+
+<script type="text/javascript" src="../../js/lunr.min.js?1649509606"></script>
+<script type="text/javascript" src="../../js/auto-complete.js?1649509606"></script>
+<script type="text/javascript">
+    
+        var baseurl = "";
+    
+</script>
+<script type="text/javascript" src="../../js/search.js?1649509606"></script>
+
+    
+  </div>
+  
+    <section id="homelinks">
+      <ul>
+        <li>
+            <a class="padding" href='../../'><i class='fas fa-home'></i> Home</a>
+        </li>
+      </ul>
+    </section>
+  
+
+    <div class="highlightable">
+    <ul class="topics">
+
+        
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/0-prepare.html" title="0-环境准备" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../0-prepare.html">
+          0-环境准备
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/0-prepare/001-vpc.html" title="001-准备基础设施" class="dd-item ">
+        <a href="../../0-prepare/001-vpc.html">
+        001-准备基础设施
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/0-prepare/002-mgmt.html" title="002-准备管理环境" class="dd-item ">
+        <a href="../../0-prepare/002-mgmt.html">
+        002-准备管理环境
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management.html" title="1-Management" class="dd-item
+        parent
+        
+        
+        ">
+      <a href="../../1-management.html">
+          1-Management
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/101-eks.html" title="101-EKS 迁移实践" class="dd-item
+        parent
+        
+        
+        ">
+      <a href="../../1-management/101-eks.html">
+          101-EKS 迁移实践
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/1-eks-setup.html" title="A-部署EKS集群" class="dd-item ">
+        <a href="../../1-management/101-eks/1-eks-setup.html">
+        A-部署EKS集群
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/2-kind-setup.html" title="B-部署Kind集群" class="dd-item ">
+        <a href="../../1-management/101-eks/2-kind-setup.html">
+        B-部署Kind集群
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/3-velero-app.html" title="C-使用Velero迁移应用" class="dd-item active">
+        <a href="../../1-management/101-eks/3-velero-app.html">
+        C-使用Velero迁移应用
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/4-csi-setup.html" title="D-(可选)设置CSI存储" class="dd-item ">
+        <a href="../../1-management/101-eks/4-csi-setup.html">
+        D-(可选)设置CSI存储
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/5-dms-data.html" title="E-使用DMS迁移数据" class="dd-item ">
+        <a href="../../1-management/101-eks/5-dms-data.html">
+        E-使用DMS迁移数据
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/102-exposing.html" title="102-服务暴露" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/102-exposing.html">
+          102-服务暴露
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/102-exposing/1-ingress-lbc.html" title="A-Ingress" class="dd-item ">
+        <a href="../../1-management/102-exposing/1-ingress-lbc.html">
+        A-Ingress
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/103-dns.html" title="103-DNS集成" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/103-dns.html">
+          103-DNS集成
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/103-dns/1-external-dns.html" title="A-ExternalDNS" class="dd-item ">
+        <a href="../../1-management/103-dns/1-external-dns.html">
+        A-ExternalDNS
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/104-scaling.html" title="104-弹性伸缩" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/104-scaling.html">
+          104-弹性伸缩
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/104-scaling/1-hpa.html" title="A-应用水平弹性伸缩" class="dd-item ">
+        <a href="../../1-management/104-scaling/1-hpa.html">
+        A-应用水平弹性伸缩
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/104-scaling/2-cluster-autoscaler.html" title="B-集群弹性伸缩" class="dd-item ">
+        <a href="../../1-management/104-scaling/2-cluster-autoscaler.html">
+        B-集群弹性伸缩
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/105-security.html" title="105-安全防护" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/105-security.html">
+          105-安全防护
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/105-security/1-acm.html" title="A-ACM" class="dd-item ">
+        <a href="../../1-management/105-security/1-acm.html">
+        A-ACM
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/about.html" title="关于我们" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../about.html">
+          关于我们
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+    </li>
+  
+ 
+
+          
+        
+    </ul>
+
+    
+    
+
+    
+    <section id="prefooter">
+      <hr/>
+      <ul>
+      
+
+      
+        <li><a class="padding" href="#" data-clear-history-toggle=""><i class="fas fa-history fa-fw"></i> </a></li>
+      
+      </ul>
+    </section>
+    
+    <section id="footer">
+      <left>
+	<h5 class="copyright">CopyRight: &copy; 2022 bwcx.me.
+		<BR>Author: Weiqiong Chen/Robin Long
+		<BR>Update: 2022-04
+	<h5>
+</left>
+    </section>
+  </div>
+</nav>
+
+
+
+
+        <section id="body">
+        <div id="overlay"></div>
+        <div class="padding highlightable">
+              
+              <div>
+                <div id="top-bar">
+                
+                
+                <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                    <span id="sidebar-toggle-span">
+                        <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+                          <i class="fas fa-bars"></i>
+                        </a>
+                    </span>
+                  
+                  <span id="toc-menu"><i class="fas fa-list-alt"></i></span>
+                  
+                  <span class="links">
+                 
+                 
+                    
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='../../'>ContainerLabs</a> > <a href='../../1-management.html'>1-Management</a> > <a href='../../1-management/101-eks.html'>101-EKS 迁移实践</a> > C-使用Velero迁移应用
+          
+        
+          
+        
+          
+        
+          
+        
+                 
+                  </span>
+                </div>
+                
+                    <div class="progress">
+    <div class="wrapper">
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#前置准备">前置准备</a></li>
+    <li><a href="#安装-velero-cli">安装 Velero Cli</a></li>
+    <li><a href="#部署-velero-server-到-kind">部署 Velero Server 到 Kind</a></li>
+    <li><a href="#部署-velero-server-到-eks">部署 Velero Server 到 EKS</a></li>
+    <li><a href="#备份迁移">备份迁移</a>
+      <ul>
+        <li><a href="#备份集群-1kind">备份集群 1（kind）</a></li>
+        <li><a href="#恢复到集群-2eks">恢复到集群 2（eks）</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+                
+              </div>
+            </div>
+            
+        <div id="head-tags">
+        
+        </div>
+        
+        <div id="body-inner">
+          
+            <h1>
+              
+              C-使用Velero迁移应用
+            </h1>
+          
+
+        
+
+
+<p>Velero（以前称为Heptio Ark）是一个开源工具，可以安全地备份和还原，执行灾难恢复以及迁移Kubernetes 集群资源和持久卷.
+用于：</p>
+<ul>
+<li>备份集群并在丢失的情况下进行还原</li>
+<li>将集群资源迁移到其他集群</li>
+<li>将生产集群复制到开发和测试集群</li>
+</ul>
+<h2 id="前置准备">前置准备</h2>
+<hr>
+<ol>
+<li>打开 Cloud9 IDE，确保在environment目录下</li>
+</ol>
+<pre><code>cd ~/environment
+</code></pre><ol start="2">
+<li>创建用于存储集群备份数据的 S3 桶</li>
+</ol>
+
+<div class="notices info" ><p>美东区域（us-east-1），请用如下命令</p>
+</div>
+
+<pre><code>export VELERO_BUCKET=$(aws s3api create-bucket \
+--bucket ekslab-backup-$(date +%s)-$RANDOM \
+--region $AWS_REGION \
+--| jq -r '.Location' \
+--| tr -d /)
+</code></pre>
+<div class="notices info" ><p>如果不是美东区域，请用如下命令</p>
+</div>
+
+<pre><code>export VELERO_BUCKET=$(aws s3api create-bucket \
+--bucket ekslab-backup-$(date +%s)-$RANDOM \
+--region $AWS_REGION \
+--create-bucket-configuration LocationConstraint=$AWS_REGION \
+--| jq -r '.Location' \
+--| cut -d'/' -f3 \
+--| cut -d'.' -f1)
+</code></pre><ol start="3">
+<li>设置 VELERO_BUCKET 环境变量</li>
+</ol>
+<pre><code>echo &quot;export VELERO_BUCKET=${VELERO_BUCKET}&quot; | tee -a ~/.bash_profile
+</code></pre><ol start="4">
+<li>为Velero准备一个IAM用户</li>
+</ol>
+<pre><code>aws iam create-user --user-name velero
+</code></pre><ol start="5">
+<li>附加需要的权限</li>
+</ol>
+<ul>
+<li>创建权限策略</li>
+</ul>
+<pre><code>cat &gt; velero-policy.json &lt;&lt;EOF
+{
+    &quot;Version&quot;: &quot;2012-10-17&quot;,
+    &quot;Statement&quot;: [
+        {
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Action&quot;: [
+                &quot;ec2:DescribeVolumes&quot;,
+                &quot;ec2:DescribeSnapshots&quot;,
+                &quot;ec2:CreateTags&quot;,
+                &quot;ec2:CreateVolume&quot;,
+                &quot;ec2:CreateSnapshot&quot;,
+                &quot;ec2:DeleteSnapshot&quot;
+            ],
+            &quot;Resource&quot;: &quot;*&quot;
+        },
+        {
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Action&quot;: [
+                &quot;s3:GetObject&quot;,
+                &quot;s3:DeleteObject&quot;,
+                &quot;s3:PutObject&quot;,
+                &quot;s3:AbortMultipartUpload&quot;,
+                &quot;s3:ListMultipartUploadParts&quot;
+            ],
+            &quot;Resource&quot;: [
+                &quot;arn:aws:s3:::${VELERO_BUCKET}/*&quot;
+            ]
+        },
+        {
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Action&quot;: [
+                &quot;s3:ListBucket&quot;
+            ],
+            &quot;Resource&quot;: [
+                &quot;arn:aws:s3:::${VELERO_BUCKET}&quot;
+            ]
+        }
+    ]
+}
+EOF
+</code></pre><ul>
+<li>关联策略到 velero 用户</li>
+</ul>
+<pre><code>aws iam put-user-policy \
+  --user-name velero \
+  --policy-name velero \
+  --policy-document file://velero-policy.json
+</code></pre><ol start="6">
+<li>创建AKSK</li>
+</ol>
+<pre><code>aws iam create-access-key --user-name velero &gt; velero-access-key.json
+</code></pre><ol start="7">
+<li>确认AKSK正确创建</li>
+</ol>
+<pre><code>cat velero-access-key.json
+</code></pre><p>输出结果类似如下，里面会有生成的AccessKeyId和SecretAccessKey：</p>
+<pre><code>{
+  &quot;AccessKey&quot;: {
+        &quot;UserName&quot;: &quot;velero&quot;,
+        &quot;Status&quot;: &quot;Active&quot;,
+        &quot;CreateDate&quot;: &quot;2021-06-22T07:36:35+00:00&quot;,
+        &quot;SecretAccessKey&quot;: &lt;AWS_SECRET_ACCESS_KEY&gt;,
+        &quot;AccessKeyId&quot;: &lt;AWS_ACCESS_KEY_ID&gt;
+  }
+}
+</code></pre><ol start="8">
+<li>准备 credentials 文件</li>
+</ol>
+<ul>
+<li>在 (~/environment) 目录下，创建如下文件</li>
+</ul>
+<pre><code>export VELERO_ACCESS_KEY_ID=$(cat velero-access-key.json | jq -r '.AccessKey.AccessKeyId')
+export VELERO_SECRET_ACCESS_KEY=$(cat velero-access-key.json | jq -r '.AccessKey.SecretAccessKey')
+cat &gt; velero-credentials &lt;&lt;EOF
+[default]
+aws_access_key_id=$VELERO_ACCESS_KEY_ID
+aws_secret_access_key=$VELERO_SECRET_ACCESS_KEY
+EOF
+</code></pre><h2 id="安装-velero-cli">安装 Velero Cli</h2>
+<hr>
+<p>参考 <a href="https://github.com/vmware-tanzu/velero-plugin-for-aws">https://github.com/vmware-tanzu/velero-plugin-for-aws</a></p>
+<ol>
+<li>下载客户端工具</li>
+</ol>
+<ul>
+<li>下载当前最新版本 <a href="https://github.com/vmware-tanzu/velero/releases/latest">latest release&rsquo;s</a> 例如 1.6.0</li>
+</ul>
+<pre><code>wget https://github.com/vmware-tanzu/velero/releases/download/v1.6.0/velero-v1.6.0-linux-amd64.tar.gz
+</code></pre><ol start="2">
+<li>解压安装并检查</li>
+</ol>
+<pre><code>tar -xvf velero-v1.6.0-linux-amd64.tar.gz -C /tmp
+sudo mv /tmp/velero-v1.6.0-linux-amd64/velero /usr/local/bin
+velero version
+</code></pre><p>当前还没有安装服务端，提示 Get Server Version 错误是正常的</p>
+<p><img src="../../images/1/101-eks/2021-06-22-15-55-41.png" alt=""></p>
+<h2 id="部署-velero-server-到-kind">部署 Velero Server 到 Kind</h2>
+<ol>
+<li>首先确认当前 context 为 kind-kind</li>
+</ol>
+<pre><code>kubectl config current-context
+</code></pre><p><img src="../../images/1/101-eks/2021-06-22-16-07-53.png" alt=""></p>
+<p>如果不是，请用下面命令切换</p>
+<pre><code>kubectl config use-context kind-kind
+</code></pre><ol start="2">
+<li>安装 Velero Server 端</li>
+</ol>
+<pre><code>velero install \
+    --provider aws \
+    --plugins velero/velero-plugin-for-aws:v1.2.0 \
+    --bucket $VELERO_BUCKET \
+    --backup-location-config region=$AWS_REGION \
+    --snapshot-location-config region=$AWS_REGION \
+    --secret-file ./velero-credentials
+</code></pre><ol start="3">
+<li>检查部署</li>
+</ol>
+<p>Velero 资源会部署到专门的namespace：“velero”</p>
+<pre><code>kubectl --context kind-kind get all -n velero
+</code></pre><p><img src="../../images/1/101-eks/2021-06-22-16-12-40.png" alt=""></p>
+<ol start="4">
+<li>编辑 deployment</li>
+</ol>
+<ul>
+<li>找出 cluster name</li>
+</ul>
+<pre><code>kubectl config view --minify -o jsonpath='{.clusters[].name}'
+</code></pre><p>类似输出 <code>kind-kind</code></p>
+<p>添加到velero部署环境变量，添加 <code>AWS_CLUSTER_NAME</code> 到 <strong>spec.template.spec.env</strong> 下</p>
+<pre><code>kubectl --context kind-kind edit deploy/velero -n velero
+</code></pre><p><img src="../../images/1/101-eks/2021-06-22-17-03-03.png" alt=""></p>
+<ol start="5">
+<li>再次检查部署</li>
+</ol>
+<pre><code>kubectl --context kind-kind describe deployment velero -n velero
+</code></pre><p><img src="../../images/1/101-eks/2021-06-22-17-05-18.png" alt=""></p>
+<h2 id="部署-velero-server-到-eks">部署 Velero Server 到 EKS</h2>
+<ol>
+<li>切换到 eks 集群 context</li>
+</ol>
+<pre><code>kubectl config use-context &quot;i-010dcc656a3c7754c@ekslab.us-east-1.eksctl.io&quot;
+</code></pre><ol start="2">
+<li>安装 Velero Server 端</li>
+</ol>
+<pre><code>velero install \
+    --provider aws \
+    --plugins velero/velero-plugin-for-aws:v1.2.0 \
+    --bucket $VELERO_BUCKET \
+    --backup-location-config region=$AWS_REGION \
+    --snapshot-location-config region=$AWS_REGION \
+    --secret-file ./velero-credentials
+</code></pre><ol start="3">
+<li>检查 velero namesapce</li>
+</ol>
+<pre><code>kubectl get all -n velero
+</code></pre><p><img src="../../images/1/101-eks/2021-06-22-16-25-36.png" alt=""></p>
+<ol start="4">
+<li>编辑 deployment</li>
+</ol>
+<ul>
+<li>找出 cluster name</li>
+</ul>
+<pre><code>kubectl config view --minify -o jsonpath='{.clusters[].name}'
+</code></pre><p>类似输出 <code>ekslab.us-east-1.eksctl.io</code></p>
+<p>添加到velero部署环境变量，添加 <code>AWS_CLUSTER_NAME</code> 到 <strong>spec.template.spec.env</strong> 下</p>
+<pre><code>kubectl edit deploy/velero -n velero
+</code></pre><p><img src="../../images/1/101-eks/2021-06-22-16-47-50.png" alt=""></p>
+<ol start="5">
+<li>再次检查 velero namesapce 资源，确保仍然正常运行</li>
+</ol>
+<pre><code>kubectl get all -n velero
+</code></pre><ol start="6">
+<li>检查 default namespace</li>
+</ol>
+<pre><code>kubectl get pods
+</code></pre><p><img src="../../images/1/101-eks/2021-06-22-16-36-22.png" alt=""></p>
+<p>目前 default namespace 尚未部署任何资源</p>
+<h2 id="备份迁移">备份迁移</h2>
+<p>参考 <a href="https://velero.io/docs/v1.6/migration-case/">https://velero.io/docs/v1.6/migration-case/</a></p>
+<h3 id="备份集群-1kind">备份集群 1（kind）</h3>
+<ol>
+<li>首先切换到 <strong>kind context</strong></li>
+</ol>
+<pre><code>kubectl config use-context &quot;kind-kind&quot;
+</code></pre><ol start="2">
+<li>备份 default namespace</li>
+</ol>
+<pre><code>velero backup create kind-default-backup --include-namespaces default
+</code></pre><!-- raw HTML omitted -->
+<ol start="3">
+<li>检查备份状态</li>
+</ol>
+<pre><code>velero backup describe kind-default-backup
+</code></pre><p><img src="../../images/1/101-eks/2021-06-22-17-43-05.png" alt=""></p>
+<p>确保处于 <strong>Completed</strong> 状态
+如果发现问题，可以通过以下命令查看日志</p>
+<pre><code>velero backup logs kind-default-backup
+</code></pre><ol start="4">
+<li>进入 S3 控制台 <a href="https://s3.console.aws.amazon.com/s3/home?region=us-east-1">https://s3.console.aws.amazon.com/s3/home?region=us-east-1</a>，查看是否有备份文件生成</li>
+</ol>
+<p><img src="../../images/1/101-eks/2021-06-22-17-46-33.png" alt=""></p>
+<h3 id="恢复到集群-2eks">恢复到集群 2（eks）</h3>
+<ol>
+<li>首先切换到 <strong>eks context</strong> 注意替换 context 名字</li>
+</ol>
+<pre><code>kubectl config use-context &quot;i-010dcc656a3c7754c@ekslab.us-east-1.eksctl.io&quot;
+</code></pre><ol start="2">
+<li>检查是否能看到集群1（kind）的备份</li>
+</ol>
+<pre><code>velero backup get
+</code></pre><p><img src="../../images/1/101-eks/2021-06-22-17-51-47.png" alt=""></p>
+<ol start="3">
+<li>查看备份详细信息</li>
+</ol>
+<pre><code>velero backup describe kind-default-backup
+</code></pre><ol start="4">
+<li>恢复 kind default namespace 到 eks default namespace</li>
+</ol>
+<pre><code>velero restore create --from-backup kind-default-backup
+</code></pre><ol start="5">
+<li>检查恢复状态</li>
+</ol>
+<ul>
+<li>查看恢复任务列表</li>
+</ul>
+<pre><code>velero restore get
+</code></pre><p>查看任务明细</p>
+<pre><code>velero restore describe kind-default-backup-20210622095748
+</code></pre><p><img src="../../images/1/101-eks/2021-06-22-18-02-22.png" alt=""></p>
+<p>确保处于 <strong>Completed</strong> 状态，如果有问题，可以查看日志</p>
+<pre><code>velero restore logs kind-default-backup-20210622095748
+</code></pre><ol start="6">
+<li>检查部署情况</li>
+</ol>
+<pre><code>kubectl get all
+</code></pre><p><img src="../../images/1/101-eks/2021-06-22-18-06-11.png" alt=""></p>
+<ol start="7">
+<li>创建 counter-eks 目录（在 ~/environment 下）</li>
+</ol>
+<pre><code>cd ~/environment
+mkdir counter-eks
+cd counter-eks
+</code></pre><ol start="8">
+<li>更新 counter-service 服务配置</li>
+</ol>
+<ul>
+<li>导出当前 counter-service YAML</li>
+</ul>
+<pre><code>kubectl get svc counter-service -o yaml &gt; counter-service.yaml
+</code></pre><ul>
+<li>利用EKS集成的 LoadBalancer 快速发布到公网</li>
+</ul>
+<p>编辑文件：</p>
+<pre><code>vi counter-service.yaml
+</code></pre><ul>
+<li>将 type: NodePort 改成 type: <code>LoadBalancer</code></li>
+<li>将 port: 8000 改为 port: 80</li>
+<li>删除 nodePort: 30000</li>
+</ul>
+<p>类似如下：
+<img src="../../images/1/101-eks/2021-06-24-10-51-26.png" alt=""></p>
+<p>然后再应用更新</p>
+<pre><code>kubectl apply -f counter-service.yaml
+</code></pre><ol start="9">
+<li>查看更新后的服务</li>
+</ol>
+<pre><code>kubectl get svc
+</code></pre><p><img src="../../images/1/101-eks/2021-06-22-18-57-40.png" alt=""></p>
+<ol start="10">
+<li>在浏览器访问服务</li>
+</ol>
+<ul>
+<li>获取地址</li>
+</ul>
+<pre><code>echo &quot;http://&quot;$(kubectl get svc counter-service --output jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+</code></pre><p><img src="../../images/1/101-eks/2021-06-22-18-59-09.png" alt=""></p>
+
+<div class="notices note" ><p>这里 Count: 0 符合预期，将在后续模块迁移数据。参考官方文档：
+Note that Velero does not natively support the migration of persistent volumes snapshots across cloud providers.
+<a href="https://velero.io/docs/v1.6/migration-case/">https://velero.io/docs/v1.6/migration-case/</a></p>
+</div>
+
+
+
+<footer class="footline">
+	
+</footer>
+
+        
+        </div>
+        
+
+      </div>
+
+    <div id="navigation">
+        
+        
+
+        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+
+        
+
+
+	 
+	 
+		
+			<a class="nav nav-prev" href="../../1-management/101-eks/2-kind-setup.html" title="B-部署Kind集群"> <i class="fa fa-chevron-left"></i></a>
+		
+		
+			<a class="nav nav-next" href="../../1-management/101-eks/4-csi-setup.html" title="D-(可选)设置CSI存储" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+		
+	
+    </div>
+
+    </section>
+
+    <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+      <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+    </div>
+    <script src="../../js/clipboard.min.js?1649509606"></script>
+    <script src="../../js/perfect-scrollbar.min.js?1649509606"></script>
+    <script src="../../js/perfect-scrollbar.jquery.min.js?1649509606"></script>
+    <script src="../../js/jquery.sticky.js?1649509606"></script>
+    <script src="../../js/featherlight.min.js?1649509606"></script>
+    <script src="../../js/highlight.pack.js?1649509606"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="../../js/modernizr.custom-3.6.0.js?1649509606"></script>
+    <script src="../../js/learn.js?1649509606"></script>
+    <script src="../../js/hugo-learn.js?1649509606"></script>
+    
+        
+            <script src="../../mermaid/mermaid.js?1649509606"></script>
+        
+        <script>
+            mermaid.initialize({ startOnLoad: true });
+        </script>
+    
+    
+
+  </body>
+</html>
+

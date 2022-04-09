@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="cn" class="js csstransforms3d">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="description" content="AWS Container Labs">
+<meta name="author" content="Weiqiong Chen/Robin Long">
+
+    <link rel="icon" href="../../images/favicon.ico" type="image/png">
+
+    <title>B-部署Kind集群 :: AWS Container Labs</title>
+
+    
+    <link href="../../css/nucleus.css?1649509606" rel="stylesheet">
+    <link href="../../css/fontawesome-all.min.css?1649509606" rel="stylesheet">
+    <link href="../../css/hybrid.css?1649509606" rel="stylesheet">
+    <link href="../../css/featherlight.min.css?1649509606" rel="stylesheet">
+    <link href="../../css/perfect-scrollbar.min.css?1649509606" rel="stylesheet">
+    <link href="../../css/auto-complete.css?1649509606" rel="stylesheet">
+    <link href="../../css/atom-one-dark-reasonable.css?1649509606" rel="stylesheet">
+    <link href="../../css/theme.css?1649509606" rel="stylesheet">
+    <link href="../../css/tabs.css?1649509606" rel="stylesheet">
+    <link href="../../css/hugo-theme.css?1649509606" rel="stylesheet">
+    
+    <link href="../../css/theme-aws.css?1649509606" rel="stylesheet">
+    
+    
+
+    <script src="../../js/jquery-3.3.1.min.js?1649509606"></script>
+
+    <style>
+      :root #header + #content > #left > #rlblock_left{
+          display:none !important;
+      }
+      
+    </style>
+    
+  </head>
+  <body class="" data-url="../../1-management/101-eks/2-kind-setup.html">
+    <nav id="sidebar" class="showVisitedLinks">
+
+
+
+  <div id="header-wrapper">
+    <div id="header">
+      <div>
+   <a href="../../" title="Go Index">
+       <img style="vertical-align:middle" src="../../images/logo.png" height="70px" />
+   </a>
+ </div>
+ 
+    </div>
+    
+        <div class="searchbox">
+    <label for="search-by"><i class="fas fa-search"></i></label>
+    <input data-search-input id="search-by" type="search" placeholder="">
+    <span data-search-clear=""><i class="fas fa-times"></i></span>
+</div>
+
+<script type="text/javascript" src="../../js/lunr.min.js?1649509606"></script>
+<script type="text/javascript" src="../../js/auto-complete.js?1649509606"></script>
+<script type="text/javascript">
+    
+        var baseurl = "";
+    
+</script>
+<script type="text/javascript" src="../../js/search.js?1649509606"></script>
+
+    
+  </div>
+  
+    <section id="homelinks">
+      <ul>
+        <li>
+            <a class="padding" href='../../'><i class='fas fa-home'></i> Home</a>
+        </li>
+      </ul>
+    </section>
+  
+
+    <div class="highlightable">
+    <ul class="topics">
+
+        
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/0-prepare.html" title="0-环境准备" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../0-prepare.html">
+          0-环境准备
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/0-prepare/001-vpc.html" title="001-准备基础设施" class="dd-item ">
+        <a href="../../0-prepare/001-vpc.html">
+        001-准备基础设施
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/0-prepare/002-mgmt.html" title="002-准备管理环境" class="dd-item ">
+        <a href="../../0-prepare/002-mgmt.html">
+        002-准备管理环境
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management.html" title="1-Management" class="dd-item
+        parent
+        
+        
+        ">
+      <a href="../../1-management.html">
+          1-Management
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/101-eks.html" title="101-EKS 迁移实践" class="dd-item
+        parent
+        
+        
+        ">
+      <a href="../../1-management/101-eks.html">
+          101-EKS 迁移实践
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/1-eks-setup.html" title="A-部署EKS集群" class="dd-item ">
+        <a href="../../1-management/101-eks/1-eks-setup.html">
+        A-部署EKS集群
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/2-kind-setup.html" title="B-部署Kind集群" class="dd-item active">
+        <a href="../../1-management/101-eks/2-kind-setup.html">
+        B-部署Kind集群
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/3-velero-app.html" title="C-使用Velero迁移应用" class="dd-item ">
+        <a href="../../1-management/101-eks/3-velero-app.html">
+        C-使用Velero迁移应用
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/4-csi-setup.html" title="D-(可选)设置CSI存储" class="dd-item ">
+        <a href="../../1-management/101-eks/4-csi-setup.html">
+        D-(可选)设置CSI存储
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/5-dms-data.html" title="E-使用DMS迁移数据" class="dd-item ">
+        <a href="../../1-management/101-eks/5-dms-data.html">
+        E-使用DMS迁移数据
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/102-exposing.html" title="102-服务暴露" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/102-exposing.html">
+          102-服务暴露
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/102-exposing/1-ingress-lbc.html" title="A-Ingress" class="dd-item ">
+        <a href="../../1-management/102-exposing/1-ingress-lbc.html">
+        A-Ingress
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/103-dns.html" title="103-DNS集成" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/103-dns.html">
+          103-DNS集成
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/103-dns/1-external-dns.html" title="A-ExternalDNS" class="dd-item ">
+        <a href="../../1-management/103-dns/1-external-dns.html">
+        A-ExternalDNS
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/104-scaling.html" title="104-弹性伸缩" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/104-scaling.html">
+          104-弹性伸缩
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/104-scaling/1-hpa.html" title="A-应用水平弹性伸缩" class="dd-item ">
+        <a href="../../1-management/104-scaling/1-hpa.html">
+        A-应用水平弹性伸缩
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/104-scaling/2-cluster-autoscaler.html" title="B-集群弹性伸缩" class="dd-item ">
+        <a href="../../1-management/104-scaling/2-cluster-autoscaler.html">
+        B-集群弹性伸缩
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/105-security.html" title="105-安全防护" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/105-security.html">
+          105-安全防护
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/105-security/1-acm.html" title="A-ACM" class="dd-item ">
+        <a href="../../1-management/105-security/1-acm.html">
+        A-ACM
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/about.html" title="关于我们" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../about.html">
+          关于我们
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+    </li>
+  
+ 
+
+          
+        
+    </ul>
+
+    
+    
+
+    
+    <section id="prefooter">
+      <hr/>
+      <ul>
+      
+
+      
+        <li><a class="padding" href="#" data-clear-history-toggle=""><i class="fas fa-history fa-fw"></i> </a></li>
+      
+      </ul>
+    </section>
+    
+    <section id="footer">
+      <left>
+	<h5 class="copyright">CopyRight: &copy; 2022 bwcx.me.
+		<BR>Author: Weiqiong Chen/Robin Long
+		<BR>Update: 2022-04
+	<h5>
+</left>
+    </section>
+  </div>
+</nav>
+
+
+
+
+        <section id="body">
+        <div id="overlay"></div>
+        <div class="padding highlightable">
+              
+              <div>
+                <div id="top-bar">
+                
+                
+                <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                    <span id="sidebar-toggle-span">
+                        <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+                          <i class="fas fa-bars"></i>
+                        </a>
+                    </span>
+                  
+                  <span id="toc-menu"><i class="fas fa-list-alt"></i></span>
+                  
+                  <span class="links">
+                 
+                 
+                    
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='../../'>ContainerLabs</a> > <a href='../../1-management.html'>1-Management</a> > <a href='../../1-management/101-eks.html'>101-EKS 迁移实践</a> > B-部署Kind集群
+          
+        
+          
+        
+          
+        
+          
+        
+                 
+                  </span>
+                </div>
+                
+                    <div class="progress">
+    <div class="wrapper">
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#创建-kind-集群">创建 Kind 集群</a></li>
+    <li><a href="#部署示例计数器应用">部署示例计数器应用</a></li>
+    <li><a href="#发布示例计数器应用">发布示例计数器应用</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+                
+              </div>
+            </div>
+            
+        <div id="head-tags">
+        
+        </div>
+        
+        <div id="body-inner">
+          
+            <h1>
+              
+              B-部署Kind集群
+            </h1>
+          
+
+        
+
+
+<p>在本模块中，您将利用 Kind 工具，模拟自建一个k8s集群。</p>
+
+<div class="notices note" ><p>本模块实践过程中，将手动创建一些 iptables 规则，如果您重启了Cloud9实例，则需要重新跑一遍相关命令</p>
+</div>
+
+<h2 id="创建-kind-集群">创建 Kind 集群</h2>
+<hr>
+<ol>
+<li>在Cloud9 IDE 中新开一个 terminal 窗口</li>
+</ol>
+<p><img src="../../images/1/101-eks/2021-06-24-09-58-27.png" alt=""></p>
+<ol start="2">
+<li>安装 kind 工具</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl -sLo kind <span style="color:#e6db74">&#34;https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64&#34;</span>
+sudo install -o root -g root -m <span style="color:#ae81ff">0755</span> kind /usr/local/bin/kind
+rm -f ./kind
+</code></pre></div><ol start="3">
+<li>配置 iptables 规则</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">echo <span style="color:#e6db74">&#39;net.ipv4.conf.all.route_localnet = 1&#39;</span> | sudo tee /etc/sysctl.conf
+sudo sysctl -p /etc/sysctl.conf
+sudo iptables -t nat -A PREROUTING -p tcp -d 169.254.170.2 --dport <span style="color:#ae81ff">80</span> -j DNAT --to-destination 127.0.0.1:51679
+sudo iptables -t nat -A OUTPUT -d 169.254.170.2 -p tcp -m tcp --dport <span style="color:#ae81ff">80</span> -j REDIRECT --to-ports <span style="color:#ae81ff">51679</span>
+</code></pre></div><ol start="4">
+<li>准备集群配置文件</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat &gt; kind.yaml <span style="color:#e6db74">&lt;&lt;EOF
+</span><span style="color:#e6db74">kind: Cluster
+</span><span style="color:#e6db74">apiVersion: kind.x-k8s.io/v1alpha4
+</span><span style="color:#e6db74">nodes:
+</span><span style="color:#e6db74">- role: control-plane
+</span><span style="color:#e6db74">  image: kindest/node:v1.19.11@sha256:07db187ae84b4b7de440a73886f008cf903fcf5764ba8106a9fd5243d6f32729
+</span><span style="color:#e6db74">  extraPortMappings:
+</span><span style="color:#e6db74">  - containerPort: 30000
+</span><span style="color:#e6db74">    hostPort: 30000
+</span><span style="color:#e6db74">  - containerPort: 30001
+</span><span style="color:#e6db74">    hostPort: 30001
+</span><span style="color:#e6db74">EOF</span>
+</code></pre></div><ol start="5">
+<li>创建本地集群</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kind create cluster --config kind.yaml
+</code></pre></div><ol start="6">
+<li>查看 k8s context
+等待约<strong>3</strong>分钟左右，kind 集群创建完毕</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl config get-contexts 
+</code></pre></div><p><img src="../../images/1/101-eks/2021-06-22-10-13-25.png" alt=""></p>
+
+<div class="notices info" ><p>以上截图 kind-kind 是默认Context。如果您是在上一步等待EKS集群创建过程中来到这一步，可能EKS集群创建尚未完成，您暂时只能看到一个Context。等EKS创建完成后，默认Context会变成ekslab</p>
+</div>
+
+<ol start="7">
+<li>查看 Node</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get no -o wide
+</code></pre></div><p><img src="../../images/1/101-eks/2021-06-22-10-14-55.png" alt=""></p>
+<ol start="8">
+<li>切换默认Context
+Set the default context to the EKS cluster.
+在本页面上，为方便操作，请确保默认Context是 kind-kind，如果不是，可以用以下命令设置</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl config use-context <span style="color:#e6db74">&#34;&lt;context-name&gt;&#34;</span>
+</code></pre></div><p>例如切换到 ekslab</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl config use-context <span style="color:#e6db74">&#34;i-010dcc656a3c7754c@ekslab.us-east-1.eksctl.io&#34;</span>
+</code></pre></div><p>切回 kind-kind</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl config use-context <span style="color:#e6db74">&#34;kind-kind&#34;</span>
+</code></pre></div><h2 id="部署示例计数器应用">部署示例计数器应用</h2>
+<hr>
+<ol>
+<li>准备 counter-kind 目录并进入</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkdir counter-kind
+cd counter-kind
+</code></pre></div><ol start="2">
+<li>准备 postgres YAML部署文件</li>
+</ol>
+<ul>
+<li>通过hostPath的方式创建 PersistentVolume 用来存储数据</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat &gt; postgres.yaml <span style="color:#e6db74">&lt;&lt;EOF
+</span><span style="color:#e6db74">---
+</span><span style="color:#e6db74">apiVersion: v1
+</span><span style="color:#e6db74">kind: ConfigMap
+</span><span style="color:#e6db74">metadata:
+</span><span style="color:#e6db74">  name: postgres-config
+</span><span style="color:#e6db74">  labels:
+</span><span style="color:#e6db74">    app: postgres
+</span><span style="color:#e6db74">data:
+</span><span style="color:#e6db74">  POSTGRES_PASSWORD: supersecret
+</span><span style="color:#e6db74">  init: |
+</span><span style="color:#e6db74">    CREATE TABLE importantdata (
+</span><span style="color:#e6db74">    id int4 PRIMARY KEY,
+</span><span style="color:#e6db74">    count int4 NOT NULL
+</span><span style="color:#e6db74">    );
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">    INSERT INTO importantdata (id , count) VALUES (1, 0);
+</span><span style="color:#e6db74">  conf: |
+</span><span style="color:#e6db74">    wal_level=logical
+</span><span style="color:#e6db74">    wal_sender_timeout=0
+</span><span style="color:#e6db74">    listen_addresses=&#39;*&#39;
+</span><span style="color:#e6db74">---
+</span><span style="color:#e6db74">kind: PersistentVolume
+</span><span style="color:#e6db74">apiVersion: v1
+</span><span style="color:#e6db74">metadata:
+</span><span style="color:#e6db74">  name: postgres-pv-volume
+</span><span style="color:#e6db74">  labels:
+</span><span style="color:#e6db74">    type: local
+</span><span style="color:#e6db74">    app: postgres
+</span><span style="color:#e6db74">spec:
+</span><span style="color:#e6db74">  storageClassName: manual
+</span><span style="color:#e6db74">  capacity:
+</span><span style="color:#e6db74">    storage: 5Gi
+</span><span style="color:#e6db74">  accessModes:
+</span><span style="color:#e6db74">    - ReadWriteMany
+</span><span style="color:#e6db74">  hostPath:
+</span><span style="color:#e6db74">    path: &#34;/mnt/data&#34;
+</span><span style="color:#e6db74">---
+</span><span style="color:#e6db74">kind: PersistentVolumeClaim
+</span><span style="color:#e6db74">apiVersion: v1
+</span><span style="color:#e6db74">metadata:
+</span><span style="color:#e6db74">  name: postgres-pv-claim
+</span><span style="color:#e6db74">  labels:
+</span><span style="color:#e6db74">    app: postgres
+</span><span style="color:#e6db74">spec:
+</span><span style="color:#e6db74">  storageClassName: manual
+</span><span style="color:#e6db74">  accessModes:
+</span><span style="color:#e6db74">    - ReadWriteMany
+</span><span style="color:#e6db74">  resources:
+</span><span style="color:#e6db74">    requests:
+</span><span style="color:#e6db74">      storage: 5Gi
+</span><span style="color:#e6db74">---
+</span><span style="color:#e6db74">apiVersion: apps/v1
+</span><span style="color:#e6db74">kind: StatefulSet
+</span><span style="color:#e6db74">metadata:
+</span><span style="color:#e6db74">  name: postgres
+</span><span style="color:#e6db74">spec:
+</span><span style="color:#e6db74">  replicas: 1
+</span><span style="color:#e6db74">  serviceName: postgres
+</span><span style="color:#e6db74">  selector:
+</span><span style="color:#e6db74">    matchLabels:
+</span><span style="color:#e6db74">      app: postgres
+</span><span style="color:#e6db74">  template:
+</span><span style="color:#e6db74">    metadata:
+</span><span style="color:#e6db74">      labels:
+</span><span style="color:#e6db74">        app: postgres
+</span><span style="color:#e6db74">    spec:
+</span><span style="color:#e6db74">      terminationGracePeriodSeconds: 5
+</span><span style="color:#e6db74">      containers:
+</span><span style="color:#e6db74">        - name: postgres
+</span><span style="color:#e6db74">          image: postgres:13
+</span><span style="color:#e6db74">          imagePullPolicy: &#34;IfNotPresent&#34;
+</span><span style="color:#e6db74">          ports:
+</span><span style="color:#e6db74">            - containerPort: 5432
+</span><span style="color:#e6db74">          envFrom:
+</span><span style="color:#e6db74">            - configMapRef:
+</span><span style="color:#e6db74">                name: postgres-config
+</span><span style="color:#e6db74">          volumeMounts:
+</span><span style="color:#e6db74">            - mountPath: /var/lib/postgresql/data
+</span><span style="color:#e6db74">              name: postgredb
+</span><span style="color:#e6db74">            - mountPath: /docker-entrypoint-initdb.d
+</span><span style="color:#e6db74">              name: init
+</span><span style="color:#e6db74">            - name: postgresql-conf
+</span><span style="color:#e6db74">              mountPath: /etc/postgresql
+</span><span style="color:#e6db74">          args: [&#34;-c&#34;, &#34;config_file=/etc/postgresql/postgresql.conf&#34;]
+</span><span style="color:#e6db74">          resources:
+</span><span style="color:#e6db74">            requests:
+</span><span style="color:#e6db74">              memory: &#34;64Mi&#34;
+</span><span style="color:#e6db74">              cpu: &#34;250m&#34;
+</span><span style="color:#e6db74">            limits:
+</span><span style="color:#e6db74">              memory: &#34;128Mi&#34;
+</span><span style="color:#e6db74">              cpu: &#34;500m&#34;            
+</span><span style="color:#e6db74">      volumes:
+</span><span style="color:#e6db74">        - name: postgredb
+</span><span style="color:#e6db74">          persistentVolumeClaim:
+</span><span style="color:#e6db74">            claimName: postgres-pv-claim
+</span><span style="color:#e6db74">        - name: init
+</span><span style="color:#e6db74">          configMap:
+</span><span style="color:#e6db74">            name: postgres-config
+</span><span style="color:#e6db74">            items:
+</span><span style="color:#e6db74">            - key: init
+</span><span style="color:#e6db74">              path: init.sql
+</span><span style="color:#e6db74">        - name: postgresql-conf
+</span><span style="color:#e6db74">          configMap:
+</span><span style="color:#e6db74">            name: postgres-config
+</span><span style="color:#e6db74">            items:
+</span><span style="color:#e6db74">            - key: conf
+</span><span style="color:#e6db74">              path: postgresql.conf      
+</span><span style="color:#e6db74">---
+</span><span style="color:#e6db74">apiVersion: v1
+</span><span style="color:#e6db74">kind: Service
+</span><span style="color:#e6db74">metadata:
+</span><span style="color:#e6db74">  name: postgres
+</span><span style="color:#e6db74">  labels:
+</span><span style="color:#e6db74">    app: postgres
+</span><span style="color:#e6db74">spec:
+</span><span style="color:#e6db74">  type: ClusterIP
+</span><span style="color:#e6db74">  ports:
+</span><span style="color:#e6db74">   - port: 5432
+</span><span style="color:#e6db74">  selector:
+</span><span style="color:#e6db74">   app: postgres      
+</span><span style="color:#e6db74">EOF</span>
+</code></pre></div><ol start="3">
+<li>部署 postgres</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl --context kind-kind apply -f postgres.yaml
+</code></pre></div><ol start="4">
+<li>准备 counter 应用YAML部署文件</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat &gt; counter.yaml <span style="color:#e6db74">&lt;&lt;EOF
+</span><span style="color:#e6db74">---
+</span><span style="color:#e6db74">apiVersion: apps/v1
+</span><span style="color:#e6db74">kind: Deployment
+</span><span style="color:#e6db74">metadata:
+</span><span style="color:#e6db74">  name: counter
+</span><span style="color:#e6db74">  labels:
+</span><span style="color:#e6db74">    app: counter
+</span><span style="color:#e6db74">spec:
+</span><span style="color:#e6db74">  replicas: 2
+</span><span style="color:#e6db74">  selector:
+</span><span style="color:#e6db74">    matchLabels:
+</span><span style="color:#e6db74">      app: counter
+</span><span style="color:#e6db74">  template:
+</span><span style="color:#e6db74">    metadata:
+</span><span style="color:#e6db74">      labels:
+</span><span style="color:#e6db74">        app: counter
+</span><span style="color:#e6db74">    spec:
+</span><span style="color:#e6db74">      containers:
+</span><span style="color:#e6db74">      - name: counter
+</span><span style="color:#e6db74">        image: public.ecr.aws/jg/counter:latest
+</span><span style="color:#e6db74">        ports:
+</span><span style="color:#e6db74">        - containerPort: 8000
+</span><span style="color:#e6db74">        resources:
+</span><span style="color:#e6db74">          requests:
+</span><span style="color:#e6db74">            memory: &#34;16Mi&#34;
+</span><span style="color:#e6db74">            cpu: &#34;100m&#34;
+</span><span style="color:#e6db74">          limits:
+</span><span style="color:#e6db74">            memory: &#34;128Mi&#34;
+</span><span style="color:#e6db74">            cpu: &#34;500m&#34;
+</span><span style="color:#e6db74">---
+</span><span style="color:#e6db74">apiVersion: v1
+</span><span style="color:#e6db74">kind: Service
+</span><span style="color:#e6db74">metadata:
+</span><span style="color:#e6db74">  name: counter-service
+</span><span style="color:#e6db74">spec:
+</span><span style="color:#e6db74">  type: NodePort
+</span><span style="color:#e6db74">  selector:
+</span><span style="color:#e6db74">    app: counter
+</span><span style="color:#e6db74">  ports:
+</span><span style="color:#e6db74">    - port: 8000
+</span><span style="color:#e6db74">      name: http
+</span><span style="color:#e6db74">      nodePort: 30000
+</span><span style="color:#e6db74">EOF</span>
+</code></pre></div><ol start="5">
+<li>部署 counter</li>
+</ol>
+<pre><code>kubectl --context kind-kind apply -f counter.yaml
+</code></pre><ol start="6">
+<li>确认部署</li>
+</ol>
+<ul>
+<li>确保应用和数据库都是正常 running 状态</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl --context kind-kind get pods
+</code></pre></div><p><img src="../../images/1/101-eks/2021-06-22-10-42-35.png" alt=""></p>
+<h2 id="发布示例计数器应用">发布示例计数器应用</h2>
+<hr>
+<ol>
+<li>进入VPC控制台“安全组”页面 <a href="https://console.aws.amazon.com/vpc/home?region=us-east-1#securityGroups:">https://console.aws.amazon.com/vpc/home?region=us-east-1#securityGroups:</a></li>
+</ol>
+<ul>
+<li>搜索 <code>ExternalSecurityGroup</code> 记录安全组 Id 和 VPC Id</li>
+</ul>
+<p><img src="../../images/1/101-eks/2021-06-24-10-12-54.png" alt=""></p>
+<p>注意替换 VpcId 和 ExternalSecurityGroupId</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">export VPC_ID<span style="color:#f92672">=</span>vpc-05776f9487841de73
+export EXTERNAL_SECURITY_GROUP<span style="color:#f92672">=</span>sg-091de3108e6ee6673
+export C9_INSTANCE_ID<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>curl -s http://169.254.169.254/latest/meta-data/instance-id<span style="color:#66d9ef">)</span>
+</code></pre></div><ol start="2">
+<li>创建ALB</li>
+</ol>
+<ul>
+<li>与Cloud9 实例在同一个子网，并绑定一样的安全组 <strong>ExternalSecurityGroup</strong></li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">export ALB_ARN<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>aws elbv2 create-load-balancer <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --name counter <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --subnets <span style="color:#66d9ef">$(</span>aws ec2 describe-subnets <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>        --filters <span style="color:#e6db74">&#34;Name=vpc-id,Values=</span>$VPC_ID<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;Name=tag:kubernetes.io/role/elb,Values=1&#34;</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>        --query <span style="color:#e6db74">&#39;Subnets[*].SubnetId&#39;</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>        --output text<span style="color:#66d9ef">)</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --type application --security-groups $EXTERNAL_SECURITY_GROUP <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --query <span style="color:#e6db74">&#39;LoadBalancers[0].LoadBalancerArn&#39;</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --output text<span style="color:#66d9ef">)</span>
+</code></pre></div><ol start="3">
+<li>创建目标群组</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">export TG_ARN<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>aws elbv2 create-target-group <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --name counter-target --protocol HTTP <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --port <span style="color:#ae81ff">30000</span> --target-type instance <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --vpc-id <span style="color:#e6db74">${</span>VPC_ID<span style="color:#e6db74">}</span> --query <span style="color:#e6db74">&#39;TargetGroups[0].TargetGroupArn&#39;</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --output text<span style="color:#66d9ef">)</span>
+</code></pre></div><ol start="4">
+<li>注册实例到目标群组</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">aws elbv2 register-targets <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --target-group-arn <span style="color:#e6db74">${</span>TG_ARN<span style="color:#e6db74">}</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --targets Id<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>C9_INSTANCE_ID<span style="color:#e6db74">}</span>
+</code></pre></div><ol start="5">
+<li>创建默认侦听器</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">aws elbv2 wait load-balancer-available <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --load-balancer-arns $ALB_ARN <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    <span style="color:#f92672">&amp;&amp;</span> export ALB_LISTENER<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>aws elbv2 create-listener <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --load-balancer-arn <span style="color:#e6db74">${</span>ALB_ARN<span style="color:#e6db74">}</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --port <span style="color:#ae81ff">80</span> --protocol HTTP <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --default-actions Type<span style="color:#f92672">=</span>forward,TargetGroupArn<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>TG_ARN<span style="color:#e6db74">}</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --query <span style="color:#e6db74">&#39;Listeners[0].ListenerArn&#39;</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --output text<span style="color:#66d9ef">)</span>
+</code></pre></div><p>需要等待大约<strong>2</strong>分钟（依赖ALB 创建完成，状态变为可用）</p>
+<ol start="6">
+<li>至此如果没有报错，我们的应用已经成功对外发布</li>
+</ol>
+<ul>
+<li>可以通过命令查看ALB 地址</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">echo <span style="color:#e6db74">&#34;http://&#34;</span><span style="color:#66d9ef">$(</span>aws elbv2 describe-load-balancers <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --load-balancer-arns $ALB_ARN <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --query <span style="color:#e6db74">&#39;LoadBalancers[0].DNSName&#39;</span> --output text<span style="color:#66d9ef">)</span>
+</code></pre></div><ul>
+<li>或者通过ELB控制台查看 <a href="https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#LoadBalancers:sort=loadBalancerName">https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#LoadBalancers:sort=loadBalancerName</a>
+<img src="../../images/1/101-eks/2021-06-22-11-30-17.png" alt=""></li>
+</ul>
+<ol start="7">
+<li>在浏览器中打开ALB地址，点击按钮<strong>count++</strong>，产生计数</li>
+</ol>
+<!-- raw HTML omitted -->
+<p><img src="../../images/1/101-eks/2021-06-22-11-28-23.png" alt=""></p>
+
+
+<footer class="footline">
+	
+</footer>
+
+        
+        </div>
+        
+
+      </div>
+
+    <div id="navigation">
+        
+        
+
+        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+
+        
+
+
+	 
+	 
+		
+			<a class="nav nav-prev" href="../../1-management/101-eks/1-eks-setup.html" title="A-部署EKS集群"> <i class="fa fa-chevron-left"></i></a>
+		
+		
+			<a class="nav nav-next" href="../../1-management/101-eks/3-velero-app.html" title="C-使用Velero迁移应用" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+		
+	
+    </div>
+
+    </section>
+
+    <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+      <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+    </div>
+    <script src="../../js/clipboard.min.js?1649509606"></script>
+    <script src="../../js/perfect-scrollbar.min.js?1649509606"></script>
+    <script src="../../js/perfect-scrollbar.jquery.min.js?1649509606"></script>
+    <script src="../../js/jquery.sticky.js?1649509606"></script>
+    <script src="../../js/featherlight.min.js?1649509606"></script>
+    <script src="../../js/highlight.pack.js?1649509606"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="../../js/modernizr.custom-3.6.0.js?1649509606"></script>
+    <script src="../../js/learn.js?1649509606"></script>
+    <script src="../../js/hugo-learn.js?1649509606"></script>
+    
+        
+            <script src="../../mermaid/mermaid.js?1649509606"></script>
+        
+        <script>
+            mermaid.initialize({ startOnLoad: true });
+        </script>
+    
+    
+
+  </body>
+</html>
+

@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="cn" class="js csstransforms3d">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="description" content="AWS Container Labs">
+<meta name="author" content="Weiqiong Chen/Robin Long">
+
+    <link rel="icon" href="../images/favicon.ico" type="image/png">
+
+    <title>001-准备基础设施 :: AWS Container Labs</title>
+
+    
+    <link href="../css/nucleus.css?1649509606" rel="stylesheet">
+    <link href="../css/fontawesome-all.min.css?1649509606" rel="stylesheet">
+    <link href="../css/hybrid.css?1649509606" rel="stylesheet">
+    <link href="../css/featherlight.min.css?1649509606" rel="stylesheet">
+    <link href="../css/perfect-scrollbar.min.css?1649509606" rel="stylesheet">
+    <link href="../css/auto-complete.css?1649509606" rel="stylesheet">
+    <link href="../css/atom-one-dark-reasonable.css?1649509606" rel="stylesheet">
+    <link href="../css/theme.css?1649509606" rel="stylesheet">
+    <link href="../css/tabs.css?1649509606" rel="stylesheet">
+    <link href="../css/hugo-theme.css?1649509606" rel="stylesheet">
+    
+    <link href="../css/theme-aws.css?1649509606" rel="stylesheet">
+    
+    
+
+    <script src="../js/jquery-3.3.1.min.js?1649509606"></script>
+
+    <style>
+      :root #header + #content > #left > #rlblock_left{
+          display:none !important;
+      }
+      
+    </style>
+    
+  </head>
+  <body class="" data-url="../0-prepare/001-vpc.html">
+    <nav id="sidebar" class="showVisitedLinks">
+
+
+
+  <div id="header-wrapper">
+    <div id="header">
+      <div>
+   <a href="../" title="Go Index">
+       <img style="vertical-align:middle" src="../images/logo.png" height="70px" />
+   </a>
+ </div>
+ 
+    </div>
+    
+        <div class="searchbox">
+    <label for="search-by"><i class="fas fa-search"></i></label>
+    <input data-search-input id="search-by" type="search" placeholder="">
+    <span data-search-clear=""><i class="fas fa-times"></i></span>
+</div>
+
+<script type="text/javascript" src="../js/lunr.min.js?1649509606"></script>
+<script type="text/javascript" src="../js/auto-complete.js?1649509606"></script>
+<script type="text/javascript">
+    
+        var baseurl = "";
+    
+</script>
+<script type="text/javascript" src="../js/search.js?1649509606"></script>
+
+    
+  </div>
+  
+    <section id="homelinks">
+      <ul>
+        <li>
+            <a class="padding" href='../'><i class='fas fa-home'></i> Home</a>
+        </li>
+      </ul>
+    </section>
+  
+
+    <div class="highlightable">
+    <ul class="topics">
+
+        
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/0-prepare.html" title="0-环境准备" class="dd-item
+        parent
+        
+        
+        ">
+      <a href="../0-prepare.html">
+          0-环境准备
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/0-prepare/001-vpc.html" title="001-准备基础设施" class="dd-item active">
+        <a href="../0-prepare/001-vpc.html">
+        001-准备基础设施
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/0-prepare/002-mgmt.html" title="002-准备管理环境" class="dd-item ">
+        <a href="../0-prepare/002-mgmt.html">
+        002-准备管理环境
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management.html" title="1-Management" class="dd-item
+        
+        
+        
+        ">
+      <a href="../1-management.html">
+          1-Management
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/101-eks.html" title="101-EKS 迁移实践" class="dd-item
+        
+        
+        
+        ">
+      <a href="../1-management/101-eks.html">
+          101-EKS 迁移实践
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/1-eks-setup.html" title="A-部署EKS集群" class="dd-item ">
+        <a href="../1-management/101-eks/1-eks-setup.html">
+        A-部署EKS集群
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/2-kind-setup.html" title="B-部署Kind集群" class="dd-item ">
+        <a href="../1-management/101-eks/2-kind-setup.html">
+        B-部署Kind集群
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/3-velero-app.html" title="C-使用Velero迁移应用" class="dd-item ">
+        <a href="../1-management/101-eks/3-velero-app.html">
+        C-使用Velero迁移应用
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/4-csi-setup.html" title="D-(可选)设置CSI存储" class="dd-item ">
+        <a href="../1-management/101-eks/4-csi-setup.html">
+        D-(可选)设置CSI存储
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/5-dms-data.html" title="E-使用DMS迁移数据" class="dd-item ">
+        <a href="../1-management/101-eks/5-dms-data.html">
+        E-使用DMS迁移数据
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/102-exposing.html" title="102-服务暴露" class="dd-item
+        
+        
+        
+        ">
+      <a href="../1-management/102-exposing.html">
+          102-服务暴露
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/102-exposing/1-ingress-lbc.html" title="A-Ingress" class="dd-item ">
+        <a href="../1-management/102-exposing/1-ingress-lbc.html">
+        A-Ingress
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/103-dns.html" title="103-DNS集成" class="dd-item
+        
+        
+        
+        ">
+      <a href="../1-management/103-dns.html">
+          103-DNS集成
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/103-dns/1-external-dns.html" title="A-ExternalDNS" class="dd-item ">
+        <a href="../1-management/103-dns/1-external-dns.html">
+        A-ExternalDNS
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/104-scaling.html" title="104-弹性伸缩" class="dd-item
+        
+        
+        
+        ">
+      <a href="../1-management/104-scaling.html">
+          104-弹性伸缩
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/104-scaling/1-hpa.html" title="A-应用水平弹性伸缩" class="dd-item ">
+        <a href="../1-management/104-scaling/1-hpa.html">
+        A-应用水平弹性伸缩
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/104-scaling/2-cluster-autoscaler.html" title="B-集群弹性伸缩" class="dd-item ">
+        <a href="../1-management/104-scaling/2-cluster-autoscaler.html">
+        B-集群弹性伸缩
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/105-security.html" title="105-安全防护" class="dd-item
+        
+        
+        
+        ">
+      <a href="../1-management/105-security.html">
+          105-安全防护
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/105-security/1-acm.html" title="A-ACM" class="dd-item ">
+        <a href="../1-management/105-security/1-acm.html">
+        A-ACM
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/about.html" title="关于我们" class="dd-item
+        
+        
+        
+        ">
+      <a href="../about.html">
+          关于我们
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+    </li>
+  
+ 
+
+          
+        
+    </ul>
+
+    
+    
+
+    
+    <section id="prefooter">
+      <hr/>
+      <ul>
+      
+
+      
+        <li><a class="padding" href="#" data-clear-history-toggle=""><i class="fas fa-history fa-fw"></i> </a></li>
+      
+      </ul>
+    </section>
+    
+    <section id="footer">
+      <left>
+	<h5 class="copyright">CopyRight: &copy; 2022 bwcx.me.
+		<BR>Author: Weiqiong Chen/Robin Long
+		<BR>Update: 2022-04
+	<h5>
+</left>
+    </section>
+  </div>
+</nav>
+
+
+
+
+        <section id="body">
+        <div id="overlay"></div>
+        <div class="padding highlightable">
+              
+              <div>
+                <div id="top-bar">
+                
+                
+                <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                    <span id="sidebar-toggle-span">
+                        <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+                          <i class="fas fa-bars"></i>
+                        </a>
+                    </span>
+                  
+                  <span id="toc-menu"><i class="fas fa-list-alt"></i></span>
+                  
+                  <span class="links">
+                 
+                 
+                    
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='../'>ContainerLabs</a> > <a href='../0-prepare.html'>0-环境准备</a> > 001-准备基础设施
+          
+        
+          
+        
+          
+        
+                 
+                  </span>
+                </div>
+                
+                    <div class="progress">
+    <div class="wrapper">
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#实验描述">实验描述</a></li>
+    <li><a href="#部署步骤">部署步骤</a></li>
+    <li><a href="#查看资源">查看资源</a></li>
+    <li><a href="#iam配置">IAM配置</a></li>
+    <li><a href="#cloud9环境配置">Cloud9环境配置</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+                
+              </div>
+            </div>
+            
+        <div id="head-tags">
+        
+        </div>
+        
+        <div id="body-inner">
+          
+            <h1>
+              
+              001-准备基础设施
+            </h1>
+          
+
+        
+
+
+
+<div class="notices info" ><p>这是这个Workshop的第一步，先准备网络和管理工具。</p>
+</div>
+
+<h2 id="实验描述">实验描述</h2>
+<hr>
+<p>本动手实验部署创建VPC，通过使用CloudFormation在实验环境中部署以下内容：</p>
+<p><strong>网络基础</strong></p>
+<ul>
+<li>创建一个包含公有、私有子网的VPC</li>
+<li>公有子网: 分别位于两个不同的可用区，该子网内的资源会暴露在互联网上，可被用户或客户端直接访问。用于部署NAT Gateway, 堡垒机，ELB负载均衡器等。</li>
+<li>私有子网: 分别位于两个不同的可用区，该子网内的资源无法直接被互联网上的用户直接访问。用于部署Web应用服务器，中间件服务，数据库服务等无需直接暴露在互联网上的服务。</li>
+<li>多个安全组: 用于控制EKS集群/EC2网络传入和传出流量。</li>
+<li>Network ACL: 网络访问控制列表，可用作防火墙来控制进出一个或多个子网的流量。</li>
+<li>Cloud9: 云IDE，便于在云上直接管理相关集群。</li>
+</ul>
+<h2 id="部署步骤">部署步骤</h2>
+<hr>
+<ol>
+<li>下载如下的yaml文件到本地操作的电脑客户端</li>
+</ol>
+<ul>
+<li><section class="attachments ">
+  <label>
+    <i class="fas fa-paperclip" aria-hidden="true"></i>
+    部署VPC的CloudFormation模板文件
+  </label>
+  <div class="attachments-files">
+    <li>
+      <a href="../0-prepare/001-vpc.files/infra.yaml">infra.yaml</a>
+      (12 )
+    </li>
+  </div>
+</section>
+</li>
+</ul>
+<ol start="2">
+<li>
+<p>打开 <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/template">CloudFormation</a> 控制台，并创建新的堆栈：</p>
+</li>
+<li>
+<p>在“准备模板”部分，保留缺省的“模板已就绪”选项。然后在&quot;模板源&quot;部分，选择&quot;上传模板文件&quot;单选框，点击【选择文件】按钮，并选择第一步中下载的CloudFormation yaml文件。点击【下一步】按钮。 输入以下的相关的参数，并点击【下一步】按钮。</p>
+</li>
+</ol>
+<ul>
+<li>堆栈名称：输入<code>ContainerWorkshop</code>
+<img src="../images/00/2021-06-21-17-33-08.png" alt=""></li>
+</ul>
+<ol start="4">
+<li>
+<p>其他选项按照默认即可，点击【下一步】按钮。
+<img src="../images/00/2021-06-21-17-33-40.png" alt=""></p>
+</li>
+<li>
+<p>在“配置堆栈选项”页面上，保留缺省值，并点击【下一步】按钮。 在“审核”页面上，勾选“我确认，AWS CloudFormation 可能创建具有自定义名称的 IAM 资源。”</p>
+</li>
+<li>
+<p>点击【创建堆栈】按钮，并等待此模板的创建执行完毕，此过程大概约<strong>5</strong>分钟左右。</p>
+</li>
+</ol>
+<ul>
+<li>在等待资源创建的过程中，可以先往下创建IAM角色</li>
+<li>创建完成后，输出内容如下：
+<img src="../images/00/2021-06-21-21-24-20.png" alt=""></li>
+</ul>
+<h2 id="查看资源">查看资源</h2>
+<hr>
+<p>进入VPC控制台： <a href="https://console.aws.amazon.com/vpc/home?region=us-east-1#vpcs:">https://console.aws.amazon.com/vpc/home?region=us-east-1#vpcs:</a></p>
+<ul>
+<li>查看创建好的VPC，子网，路由表，安全组，Internet Gateway，NAT Gateway等资源。</li>
+</ul>
+<h2 id="iam配置">IAM配置</h2>
+<ol>
+<li>进入IAM控制台：<a href="https://console.aws.amazon.com/iam/home?region=us-east-1#/roles">https://console.aws.amazon.com/iam/home?region=us-east-1#/roles</a></li>
+</ol>
+<ul>
+<li>创建角色 <code>ContainerAdminRole</code></li>
+<li>附加权限 <code>AdministratorAccess</code>
+<img src="../images/00/2021-06-21-19-49-58.png" alt=""></li>
+</ul>
+<h2 id="cloud9环境配置">Cloud9环境配置</h2>
+<hr>
+<p>AWS Cloud9 是一个基于云的集成开发环境 (IDE)，您只需使用浏览器即可编写、运行和调试代码。它包括代码编辑器、调试器和终端。Cloud9 预先打包了适用于常用编程语言的基本工具和预安装的 AWS 命令行工具 (CLI)。</p>
+<ol>
+<li>
+<p>进入Cloud9控制台，点击第一步CloudFormation输出里的“Cloud9URL”，或者 <a href="https://console.aws.amazon.com/cloud9/home?region=us-east-1">https://console.aws.amazon.com/cloud9/home?region=us-east-1</a>
+刚部署好的 cloud9 干净环境如下：
+<img src="../images/00/2021-06-21-19-51-15.png" alt=""></p>
+</li>
+<li>
+<p>点击CLoud9环境中右上角的图标，选择管理EC2实例（Manange EC Instance）</p>
+</li>
+<li>
+<p>在接下来打开的窗口中，关联Cloud9的EC2实例和刚才创建的角色</p>
+</li>
+</ol>
+<ul>
+<li>此处为：ContainerAdminRole，如下图所示（仅供参考，因为每个人部署的实例ID不一样）
+<img src="../images/00/2021-06-21-19-54-16.png" alt=""></li>
+</ul>
+<ol start="4">
+<li>
+<p>关联后保存即可
+<img src="../images/00/2021-06-21-19-54-50.png" alt=""></p>
+</li>
+<li>
+<p>仍然在EC2控制台，操作更改安全组
+<img src="../images/00/2021-06-21-21-46-47.png" alt=""></p>
+</li>
+<li>
+<p>添加三个安全组后保存</p>
+</li>
+</ol>
+<ul>
+<li>搜索 <code>ControlPlaneSecurityGroup</code></li>
+<li>搜索 <code>SharedNodeSecurityGroup</code></li>
+<li>搜索 <code>ExternalSecurityGroup</code>
+以ControlPlaneSecurityGroup为例
+<img src="../images/00/2021-06-21-21-54-25.png" alt=""></li>
+</ul>
+<p>最后绑定安全组类似如下（其中第一个是默认的）：
+<img src="../images/00/2021-06-23-11-03-21.png" alt=""></p>
+
+<div class="notices note" ><p>这里仅仅是为了实验方便，所以Cloud9 IDE 承担了很多角色，为了方便连通各个服务才绑定这么多安全组</p>
+</div>
+
+<ol start="7">
+<li>更新Cloud9的环境配置</li>
+</ol>
+<ul>
+<li>在Cloud9环境中，选择右上角的设置按钮，关闭：AWS managed temporary credentials
+<img src="../images/00/2021-06-21-19-57-38.png" alt=""></li>
+</ul>
+<ol start="8">
+<li>然后删除临时的credentials</li>
+</ol>
+<ul>
+<li>在Cloud9 IDE 下方的命令行窗口执行以下命令</li>
+</ul>
+<pre><code>rm -vf ${HOME}/.aws/credentials
+</code></pre>
+
+<footer class="footline">
+	
+</footer>
+
+        
+        </div>
+        
+
+      </div>
+
+    <div id="navigation">
+        
+        
+
+        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+
+        
+
+
+	 
+	 
+		
+			<a class="nav nav-prev" href="../0-prepare.html" title="0-环境准备"> <i class="fa fa-chevron-left"></i></a>
+		
+		
+			<a class="nav nav-next" href="../0-prepare/002-mgmt.html" title="002-准备管理环境" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+		
+	
+    </div>
+
+    </section>
+
+    <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+      <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+    </div>
+    <script src="../js/clipboard.min.js?1649509606"></script>
+    <script src="../js/perfect-scrollbar.min.js?1649509606"></script>
+    <script src="../js/perfect-scrollbar.jquery.min.js?1649509606"></script>
+    <script src="../js/jquery.sticky.js?1649509606"></script>
+    <script src="../js/featherlight.min.js?1649509606"></script>
+    <script src="../js/highlight.pack.js?1649509606"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="../js/modernizr.custom-3.6.0.js?1649509606"></script>
+    <script src="../js/learn.js?1649509606"></script>
+    <script src="../js/hugo-learn.js?1649509606"></script>
+    
+        
+            <script src="../mermaid/mermaid.js?1649509606"></script>
+        
+        <script>
+            mermaid.initialize({ startOnLoad: true });
+        </script>
+    
+    
+
+  </body>
+</html>
+

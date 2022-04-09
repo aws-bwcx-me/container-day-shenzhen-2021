@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="cn" class="js csstransforms3d">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="description" content="AWS Container Labs">
+<meta name="author" content="Weiqiong Chen/Robin Long">
+
+    <link rel="icon" href="../../images/favicon.ico" type="image/png">
+
+    <title>A-ExternalDNS :: AWS Container Labs</title>
+
+    
+    <link href="../../css/nucleus.css?1649509606" rel="stylesheet">
+    <link href="../../css/fontawesome-all.min.css?1649509606" rel="stylesheet">
+    <link href="../../css/hybrid.css?1649509606" rel="stylesheet">
+    <link href="../../css/featherlight.min.css?1649509606" rel="stylesheet">
+    <link href="../../css/perfect-scrollbar.min.css?1649509606" rel="stylesheet">
+    <link href="../../css/auto-complete.css?1649509606" rel="stylesheet">
+    <link href="../../css/atom-one-dark-reasonable.css?1649509606" rel="stylesheet">
+    <link href="../../css/theme.css?1649509606" rel="stylesheet">
+    <link href="../../css/tabs.css?1649509606" rel="stylesheet">
+    <link href="../../css/hugo-theme.css?1649509606" rel="stylesheet">
+    
+    <link href="../../css/theme-aws.css?1649509606" rel="stylesheet">
+    
+    
+
+    <script src="../../js/jquery-3.3.1.min.js?1649509606"></script>
+
+    <style>
+      :root #header + #content > #left > #rlblock_left{
+          display:none !important;
+      }
+      
+    </style>
+    
+  </head>
+  <body class="" data-url="../../1-management/103-dns/1-external-dns.html">
+    <nav id="sidebar" class="showVisitedLinks">
+
+
+
+  <div id="header-wrapper">
+    <div id="header">
+      <div>
+   <a href="../../" title="Go Index">
+       <img style="vertical-align:middle" src="../../images/logo.png" height="70px" />
+   </a>
+ </div>
+ 
+    </div>
+    
+        <div class="searchbox">
+    <label for="search-by"><i class="fas fa-search"></i></label>
+    <input data-search-input id="search-by" type="search" placeholder="">
+    <span data-search-clear=""><i class="fas fa-times"></i></span>
+</div>
+
+<script type="text/javascript" src="../../js/lunr.min.js?1649509606"></script>
+<script type="text/javascript" src="../../js/auto-complete.js?1649509606"></script>
+<script type="text/javascript">
+    
+        var baseurl = "";
+    
+</script>
+<script type="text/javascript" src="../../js/search.js?1649509606"></script>
+
+    
+  </div>
+  
+    <section id="homelinks">
+      <ul>
+        <li>
+            <a class="padding" href='../../'><i class='fas fa-home'></i> Home</a>
+        </li>
+      </ul>
+    </section>
+  
+
+    <div class="highlightable">
+    <ul class="topics">
+
+        
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/0-prepare.html" title="0-环境准备" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../0-prepare.html">
+          0-环境准备
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/0-prepare/001-vpc.html" title="001-准备基础设施" class="dd-item ">
+        <a href="../../0-prepare/001-vpc.html">
+        001-准备基础设施
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/0-prepare/002-mgmt.html" title="002-准备管理环境" class="dd-item ">
+        <a href="../../0-prepare/002-mgmt.html">
+        002-准备管理环境
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management.html" title="1-Management" class="dd-item
+        parent
+        
+        
+        ">
+      <a href="../../1-management.html">
+          1-Management
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/101-eks.html" title="101-EKS 迁移实践" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/101-eks.html">
+          101-EKS 迁移实践
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/1-eks-setup.html" title="A-部署EKS集群" class="dd-item ">
+        <a href="../../1-management/101-eks/1-eks-setup.html">
+        A-部署EKS集群
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/2-kind-setup.html" title="B-部署Kind集群" class="dd-item ">
+        <a href="../../1-management/101-eks/2-kind-setup.html">
+        B-部署Kind集群
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/3-velero-app.html" title="C-使用Velero迁移应用" class="dd-item ">
+        <a href="../../1-management/101-eks/3-velero-app.html">
+        C-使用Velero迁移应用
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/4-csi-setup.html" title="D-(可选)设置CSI存储" class="dd-item ">
+        <a href="../../1-management/101-eks/4-csi-setup.html">
+        D-(可选)设置CSI存储
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/101-eks/5-dms-data.html" title="E-使用DMS迁移数据" class="dd-item ">
+        <a href="../../1-management/101-eks/5-dms-data.html">
+        E-使用DMS迁移数据
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/102-exposing.html" title="102-服务暴露" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/102-exposing.html">
+          102-服务暴露
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/102-exposing/1-ingress-lbc.html" title="A-Ingress" class="dd-item ">
+        <a href="../../1-management/102-exposing/1-ingress-lbc.html">
+        A-Ingress
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/103-dns.html" title="103-DNS集成" class="dd-item
+        parent
+        
+        
+        ">
+      <a href="../../1-management/103-dns.html">
+          103-DNS集成
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/103-dns/1-external-dns.html" title="A-ExternalDNS" class="dd-item active">
+        <a href="../../1-management/103-dns/1-external-dns.html">
+        A-ExternalDNS
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/104-scaling.html" title="104-弹性伸缩" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/104-scaling.html">
+          104-弹性伸缩
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/104-scaling/1-hpa.html" title="A-应用水平弹性伸缩" class="dd-item ">
+        <a href="../../1-management/104-scaling/1-hpa.html">
+        A-应用水平弹性伸缩
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/104-scaling/2-cluster-autoscaler.html" title="B-集群弹性伸缩" class="dd-item ">
+        <a href="../../1-management/104-scaling/2-cluster-autoscaler.html">
+        B-集群弹性伸缩
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-management/105-security.html" title="105-安全防护" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../1-management/105-security.html">
+          105-安全防护
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/1-management/105-security/1-acm.html" title="A-ACM" class="dd-item ">
+        <a href="../../1-management/105-security/1-acm.html">
+        A-ACM
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/about.html" title="关于我们" class="dd-item
+        
+        
+        
+        ">
+      <a href="../../about.html">
+          关于我们
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+    </li>
+  
+ 
+
+          
+        
+    </ul>
+
+    
+    
+
+    
+    <section id="prefooter">
+      <hr/>
+      <ul>
+      
+
+      
+        <li><a class="padding" href="#" data-clear-history-toggle=""><i class="fas fa-history fa-fw"></i> </a></li>
+      
+      </ul>
+    </section>
+    
+    <section id="footer">
+      <left>
+	<h5 class="copyright">CopyRight: &copy; 2022 bwcx.me.
+		<BR>Author: Weiqiong Chen/Robin Long
+		<BR>Update: 2022-04
+	<h5>
+</left>
+    </section>
+  </div>
+</nav>
+
+
+
+
+        <section id="body">
+        <div id="overlay"></div>
+        <div class="padding highlightable">
+              
+              <div>
+                <div id="top-bar">
+                
+                
+                <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                    <span id="sidebar-toggle-span">
+                        <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+                          <i class="fas fa-bars"></i>
+                        </a>
+                    </span>
+                  
+                  <span id="toc-menu"><i class="fas fa-list-alt"></i></span>
+                  
+                  <span class="links">
+                 
+                 
+                    
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='../../'>ContainerLabs</a> > <a href='../../1-management.html'>1-Management</a> > <a href='../../1-management/103-dns.html'>103-DNS集成</a> > A-ExternalDNS
+          
+        
+          
+        
+          
+        
+          
+        
+                 
+                  </span>
+                </div>
+                
+                    <div class="progress">
+    <div class="wrapper">
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#介绍">介绍</a></li>
+    <li><a href="#前置条件">前置条件</a></li>
+    <li><a href="#部署-externaldns">部署 ExternalDNS</a></li>
+    <li><a href="#部署样例应用">部署样例应用</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+                
+              </div>
+            </div>
+            
+        <div id="head-tags">
+        
+<div class="tags">
+
+  <a class="tag-link" href="../../tags/service">Service</a>
+
+  <a class="tag-link" href="../../tags/expose">Expose</a>
+
+</div>
+
+        </div>
+        
+        <div id="body-inner">
+          
+            <h1>
+              
+              A-ExternalDNS
+            </h1>
+          
+
+        
+
+
+<h2 id="介绍">介绍</h2>
+<hr>
+<p>ExternalDNS 使 Kubernetes 资源可以通过公共 DNS 服务器发现。它从 Kubernetes API 中检索资源（服务、入口等）列表，以确定所需的 DNS 记录列表。它本身不是 DNS 服务器，而只是相应地配置其他 DNS 提供商，例如 AWS Route 53。</p>
+<p>官网 <a href="https://github.com/kubernetes-sigs/external-dns">https://github.com/kubernetes-sigs/external-dns</a></p>
+<h2 id="前置条件">前置条件</h2>
+<ul>
+<li>一个测试域名</li>
+<li>已经完成 <a href="../../1-management/102-exposing/1-ingress-lbc.html">102-服务暴露-A-Ingress</a> ，AWS Load Balancer Controller已经安装</li>
+</ul>
+<h2 id="部署-externaldns">部署 ExternalDNS</h2>
+<hr>
+<p>参考 <a href="https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/alb-ingress.md">https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/alb-ingress.md</a></p>
+<ol>
+<li>进入Cloud9 IDE，准备目录和域名变量
+请替换 <strong><code>bwcx.tk</code></strong> 为您自己的域名</li>
+</ol>
+<pre><code>mkdir ${HOME}/environment/dns
+cd ${HOME}/environment/dns
+export DNS_TEST_DOMAIN=&quot;bwcx.tk&quot;
+</code></pre><ol start="2">
+<li>创建 <strong>策略</strong></li>
+</ol>
+<pre><code>cat &gt; iam-dns-policy.json &lt;&lt;EOF
+{
+  &quot;Version&quot;: &quot;2012-10-17&quot;,
+  &quot;Statement&quot;: [
+    {
+      &quot;Effect&quot;: &quot;Allow&quot;,
+      &quot;Action&quot;: [
+        &quot;route53:ChangeResourceRecordSets&quot;
+      ],
+      &quot;Resource&quot;: [
+        &quot;arn:aws:route53:::hostedzone/*&quot;
+      ]
+    },
+    {
+      &quot;Effect&quot;: &quot;Allow&quot;,
+      &quot;Action&quot;: [
+        &quot;route53:ListHostedZones&quot;,
+        &quot;route53:ListResourceRecordSets&quot;
+      ],
+      &quot;Resource&quot;: [
+        &quot;*&quot;
+      ]
+    }
+  ]
+}
+EOF
+
+aws iam create-policy \
+    --policy-name AllowExternalDNSUpdates \
+    --policy-document file://iam-dns-policy.json
+</code></pre><ol start="3">
+<li>创建 <strong>Service Account</strong></li>
+</ol>
+<pre><code>eksctl create iamserviceaccount \
+    --name external-dns \
+    --namespace kube-system \
+    --cluster ekslab \
+    --attach-policy-arn=arn:aws:iam::${ACCOUNT_ID}:policy/AllowExternalDNSUpdates \
+    --override-existing-serviceaccounts \
+    --approve
+</code></pre><p>创建完成以后检查</p>
+<pre><code>kubectl describe sa external-dns -n kube-system
+</code></pre><ol start="4">
+<li>检查 RBAC是否启用（官方文档里根据RBAC是否启用，部署文件有差异）</li>
+</ol>
+<pre><code>kubectl api-versions | grep rbac.authorization.k8s.io
+</code></pre>
+<div class="notices info" ><p>这里实验默认是启用的，输出类似如下：</p>
+</div>
+
+<pre><code>rbac.authorization.k8s.io/v1
+rbac.authorization.k8s.io/v1beta1
+</code></pre><ol start="5">
+<li>创建 Route 53 托管区域</li>
+</ol>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">aws route53 create-hosted-zone --name <span style="color:#e6db74">${</span>DNS_TEST_DOMAIN<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;.&#34;</span> --caller-reference <span style="color:#e6db74">&#34;external-dns-test-</span><span style="color:#66d9ef">$(</span>date +%s<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</code></pre></div><p>创建完成后，可以在 Route 53 控制台查看 <a href="https://console.aws.amazon.com/route53/v2/hostedzones#">https://console.aws.amazon.com/route53/v2/hostedzones#</a></p>
+
+<div class="notices warning" ><p>如果您的域名不是通过AWS注册的，需要配置类似下图的 name servers 地址到您的DNS解析提供商</p>
+</div>
+
+<!-- raw HTML omitted -->
+<p><img src="../../images/1/103-dns/2021-06-29-09-24-26.png" alt=""></p>
+<ol start="6">
+<li>记录托管区ID</li>
+</ol>
+<pre><code>aws route53 list-hosted-zones-by-name --output json --dns-name ${DNS_TEST_DOMAIN}&quot;.&quot; | jq -r '.HostedZones[0].Id'
+</code></pre><ol start="7">
+<li>准备部署文件</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat &gt; external-dns.yaml <span style="color:#e6db74">&lt;&lt;EOF
+</span><span style="color:#e6db74">apiVersion: rbac.authorization.k8s.io/v1beta1
+</span><span style="color:#e6db74">kind: ClusterRole
+</span><span style="color:#e6db74">metadata:
+</span><span style="color:#e6db74">  name: external-dns
+</span><span style="color:#e6db74">rules:
+</span><span style="color:#e6db74">- apiGroups: [&#34;&#34;]
+</span><span style="color:#e6db74">  resources: [&#34;services&#34;]
+</span><span style="color:#e6db74">  verbs: [&#34;get&#34;,&#34;watch&#34;,&#34;list&#34;]
+</span><span style="color:#e6db74">- apiGroups: [&#34;&#34;]
+</span><span style="color:#e6db74">  resources: [&#34;pods&#34;]
+</span><span style="color:#e6db74">  verbs: [&#34;get&#34;,&#34;watch&#34;,&#34;list&#34;]
+</span><span style="color:#e6db74">- apiGroups: [&#34;extensions&#34;]
+</span><span style="color:#e6db74">  resources: [&#34;ingresses&#34;]
+</span><span style="color:#e6db74">  verbs: [&#34;get&#34;,&#34;watch&#34;,&#34;list&#34;]
+</span><span style="color:#e6db74">- apiGroups: [&#34;&#34;]
+</span><span style="color:#e6db74">  resources: [&#34;nodes&#34;]
+</span><span style="color:#e6db74">  verbs: [&#34;list&#34;]
+</span><span style="color:#e6db74">- apiGroups: [&#34;&#34;]
+</span><span style="color:#e6db74">  resources: [&#34;endpoints&#34;]
+</span><span style="color:#e6db74">  verbs: [&#34;get&#34;,&#34;watch&#34;,&#34;list&#34;]  
+</span><span style="color:#e6db74">---
+</span><span style="color:#e6db74">apiVersion: rbac.authorization.k8s.io/v1beta1
+</span><span style="color:#e6db74">kind: ClusterRoleBinding
+</span><span style="color:#e6db74">metadata:
+</span><span style="color:#e6db74">  name: external-dns-viewer
+</span><span style="color:#e6db74">roleRef:
+</span><span style="color:#e6db74">  apiGroup: rbac.authorization.k8s.io
+</span><span style="color:#e6db74">  kind: ClusterRole
+</span><span style="color:#e6db74">  name: external-dns
+</span><span style="color:#e6db74">subjects:
+</span><span style="color:#e6db74">- kind: ServiceAccount
+</span><span style="color:#e6db74">  name: external-dns
+</span><span style="color:#e6db74">  namespace: kube-system
+</span><span style="color:#e6db74">---
+</span><span style="color:#e6db74">apiVersion: apps/v1
+</span><span style="color:#e6db74">kind: Deployment
+</span><span style="color:#e6db74">metadata:
+</span><span style="color:#e6db74">  name: external-dns
+</span><span style="color:#e6db74">  namespace: kube-system
+</span><span style="color:#e6db74">spec:
+</span><span style="color:#e6db74">  selector:
+</span><span style="color:#e6db74">    matchLabels:
+</span><span style="color:#e6db74">      app: external-dns
+</span><span style="color:#e6db74">  strategy:
+</span><span style="color:#e6db74">    type: Recreate
+</span><span style="color:#e6db74">  template:
+</span><span style="color:#e6db74">    metadata:
+</span><span style="color:#e6db74">      labels:
+</span><span style="color:#e6db74">        app: external-dns
+</span><span style="color:#e6db74">    spec:
+</span><span style="color:#e6db74">      serviceAccountName: external-dns
+</span><span style="color:#e6db74">      securityContext:
+</span><span style="color:#e6db74">        fsGroup: 65534
+</span><span style="color:#e6db74">      containers:
+</span><span style="color:#e6db74">      - name: external-dns
+</span><span style="color:#e6db74">        image: k8s.gcr.io/external-dns/external-dns:v0.8.0
+</span><span style="color:#e6db74">        args:
+</span><span style="color:#e6db74">        - --source=service
+</span><span style="color:#e6db74">        - --source=ingress
+</span><span style="color:#e6db74">        - --domain-filter=${DNS_TEST_DOMAIN} # will make ExternalDNS see only the hosted zones matching provided domain, omit to process all available hosted zones
+</span><span style="color:#e6db74">        - --provider=aws
+</span><span style="color:#e6db74">        - --aws-zone-type=public # only look at public hosted zones (valid values are public, private or no value for both)
+</span><span style="color:#e6db74">        - --registry=txt
+</span><span style="color:#e6db74">        - --txt-owner-id=my-identifier
+</span><span style="color:#e6db74">EOF</span>
+</code></pre></div><ol start="8">
+<li>执行部署并检查</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f external-dns.yaml
+</code></pre></div><p>检查</p>
+<pre><code>kubectl get pod -l app=external-dns -n kube-system
+kubectl logs -f $(kubectl get po -n kube-system | egrep -o 'external-dns[A-Za-z0-9-]+') -n kube-system
+</code></pre><h2 id="部署样例应用">部署样例应用</h2>
+<hr>
+<p>下面更新示例应用 <a href="https://gabrielecirulli.github.io/2048/">2048 game</a></p>
+<ol>
+<li>进入 2048 目录</li>
+</ol>
+<pre><code>cd ${HOME}/environment/2048
+</code></pre><ol start="2">
+<li>创建新 ingress 文件</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat &gt; 2048_ingress_dns.yaml <span style="color:#e6db74">&lt;&lt;EOF
+</span><span style="color:#e6db74">apiVersion: networking.k8s.io/v1
+</span><span style="color:#e6db74">kind: Ingress
+</span><span style="color:#e6db74">metadata:
+</span><span style="color:#e6db74">  namespace: game-2048
+</span><span style="color:#e6db74">  name: ingress-2048
+</span><span style="color:#e6db74">  annotations:
+</span><span style="color:#e6db74">    kubernetes.io/ingress.class: alb
+</span><span style="color:#e6db74">    alb.ingress.kubernetes.io/scheme: internet-facing
+</span><span style="color:#e6db74">    alb.ingress.kubernetes.io/target-type: instance
+</span><span style="color:#e6db74">    # for creating record-set
+</span><span style="color:#e6db74">    external-dns.alpha.kubernetes.io/hostname: 2048.${DNS_TEST_DOMAIN} # give your domain name here
+</span><span style="color:#e6db74">    external-dns.alpha.kubernetes.io/ttl: &#34;60&#34;
+</span><span style="color:#e6db74">spec:
+</span><span style="color:#e6db74">  rules:
+</span><span style="color:#e6db74">    - http:
+</span><span style="color:#e6db74">        paths:
+</span><span style="color:#e6db74">        - path: /
+</span><span style="color:#e6db74">          pathType: Prefix
+</span><span style="color:#e6db74">          backend:
+</span><span style="color:#e6db74">            service:
+</span><span style="color:#e6db74">              name: service-2048
+</span><span style="color:#e6db74">              port:
+</span><span style="color:#e6db74">                number: 80
+</span><span style="color:#e6db74">EOF</span>
+</code></pre></div><ol start="3">
+<li>执行部署</li>
+</ol>
+<pre><code>kubectl apply -f 2048_ingress_dns.yaml
+</code></pre><ol start="4">
+<li>查看 ExternalDNS 日志</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl logs -f <span style="color:#66d9ef">$(</span>kubectl get po -n kube-system | egrep -o <span style="color:#e6db74">&#39;external-dns[A-Za-z0-9-]+&#39;</span><span style="color:#66d9ef">)</span> -n kube-system
+</code></pre></div><p>输出类似如下：</p>
+<pre><code>time=&quot;2021-06-25T09:10:51Z&quot; level=info msg=&quot;Desired change: CREATE 2048.bwcx.tk A [Id: /hostedzone/Z0759090APIKX508GBYY]&quot;
+time=&quot;2021-06-25T09:10:51Z&quot; level=info msg=&quot;Desired change: CREATE 2048.bwcx.tk TXT [Id: /hostedzone/Z0759090APIKX508GBYY]&quot;
+time=&quot;2021-06-25T09:10:51Z&quot; level=info msg=&quot;2 record(s) in zone bwcx.tk. [Id: /hostedzone/Z0759090APIKX508GBYY] were successfully updated&quot;
+</code></pre><ol start="5">
+<li>打开 Route53 控制台 <a href="https://console.aws.amazon.com/route53/v2/hostedzones#">https://console.aws.amazon.com/route53/v2/hostedzones#</a></li>
+</ol>
+<p>在明细里可以看到自动添加的DNS解析记录
+<img src="../../images/1/103-dns/2021-06-25-17-14-18.png" alt=""></p>
+<ol start="6">
+<li>浏览器中检查</li>
+</ol>
+<p><img src="../../images/1/103-dns/2021-06-25-17-15-35.png" alt=""></p>
+
+
+<footer class="footline">
+	
+</footer>
+
+        
+        </div>
+        
+
+      </div>
+
+    <div id="navigation">
+        
+        
+
+        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+
+        
+
+
+	 
+	 
+		
+			<a class="nav nav-prev" href="../../1-management/103-dns.html" title="103-DNS集成"> <i class="fa fa-chevron-left"></i></a>
+		
+		
+			<a class="nav nav-next" href="../../1-management/104-scaling.html" title="104-弹性伸缩" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+		
+	
+    </div>
+
+    </section>
+
+    <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+      <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+    </div>
+    <script src="../../js/clipboard.min.js?1649509606"></script>
+    <script src="../../js/perfect-scrollbar.min.js?1649509606"></script>
+    <script src="../../js/perfect-scrollbar.jquery.min.js?1649509606"></script>
+    <script src="../../js/jquery.sticky.js?1649509606"></script>
+    <script src="../../js/featherlight.min.js?1649509606"></script>
+    <script src="../../js/highlight.pack.js?1649509606"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="../../js/modernizr.custom-3.6.0.js?1649509606"></script>
+    <script src="../../js/learn.js?1649509606"></script>
+    <script src="../../js/hugo-learn.js?1649509606"></script>
+    
+        
+            <script src="../../mermaid/mermaid.js?1649509606"></script>
+        
+        <script>
+            mermaid.initialize({ startOnLoad: true });
+        </script>
+    
+    
+
+  </body>
+</html>
+

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>103-DNS集成 on AWS Container Labs</title>
+    <link>/1-management/103-dns.html</link>
+    <description>Recent content in 103-DNS集成 on AWS Container Labs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    
+	<atom:link href="/1-management/103-dns/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>A-ExternalDNS</title>
+      <link>/1-management/103-dns/1-external-dns.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/1-management/103-dns/1-external-dns.html</guid>
+      <description>介绍  ExternalDNS 使 Kubernetes 资源可以通过公共 DNS 服务器发现。它从 Kubernetes API 中检索资源（服务、入口等）列表，以确定所需的 DNS 记录列表。它本身不是 DNS 服务器，而只是相应地配置其他 DNS 提供商，例如 AWS Route 53。
+官网 https://github.com/kubernetes-sigs/external-dns
+前置条件  一个测试域名 已经完成 102-服务暴露-A-Ingress ，AWS Load Balancer Controller已经安装  部署 ExternalDNS  参考 https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/alb-ingress.md
+ 进入Cloud9 IDE，准备目录和域名变量 请替换 bwcx.tk 为您自己的域名  mkdir ${HOME}/environment/dns cd ${HOME}/environment/dns export DNS_TEST_DOMAIN=&amp;quot;bwcx.tk&amp;quot; 创建 策略  cat &amp;gt; iam-dns-policy.json &amp;lt;&amp;lt;EOF { &amp;quot;Version&amp;quot;: &amp;quot;2012-10-17&amp;quot;, &amp;quot;Statement&amp;quot;: [ { &amp;quot;Effect&amp;quot;: &amp;quot;Allow&amp;quot;, &amp;quot;Action&amp;quot;: [ &amp;quot;route53:ChangeResourceRecordSets&amp;quot; ], &amp;quot;Resource&amp;quot;: [ &amp;quot;arn:aws:route53:::hostedzone/*&amp;quot; ] }, { &amp;quot;Effect&amp;quot;: &amp;quot;Allow&amp;quot;, &amp;quot;Action&amp;quot;: [ &amp;quot;route53:ListHostedZones&amp;quot;, &amp;quot;route53:ListResourceRecordSets&amp;quot; ], &amp;quot;Resource&amp;quot;: [ &amp;quot;*&amp;quot; ] } ] } EOF aws iam create-policy \ --policy-name AllowExternalDNSUpdates \ --policy-document file://iam-dns-policy.</description>
+    </item>
+    
+  </channel>
+</rss>

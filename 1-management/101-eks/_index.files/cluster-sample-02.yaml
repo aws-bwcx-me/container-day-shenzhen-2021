@@ -1,0 +1,30 @@
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: ekslab
+  region: us-east-1
+  version: "1.20"
+
+vpc:
+  id: "vpc-05776f9487841de73"
+  securityGroup: sg-03e9b38f03e2c010d
+  sharedNodeSecurityGroup: sg-0ced9d485860e2776
+  subnets:
+    public:
+      us-east-1a:
+          id: "subnet-08d7cace8fc10eeca"
+      us-east-1b:
+          id: "subnet-0da1162745cab1b30"
+    private:
+      us-east-1a:
+          id: "subnet-003926140cbe781b9"
+      us-east-1b:
+          id: "subnet-0222baeb45ee26cf2"       
+
+cloudWatch:
+  clusterLogging:
+    enableTypes: ["*"]
+
+secretsEncryption:
+  keyARN: arn:aws:kms:us-east-1:759181371533:key/5a428ca2-517d-4e41-89a3-59eea120801e

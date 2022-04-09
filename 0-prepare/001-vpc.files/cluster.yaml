@@ -1,0 +1,36 @@
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: ekslab
+  region: us-east-1
+  version: "1.20"
+# availabilityZones: ["us-east-1a", "us-east-1b", "us-east-1c"] # 不能同时跟 subnets 设置
+
+# vpc
+vpc:
+  clusterEndpoints:
+    privateAccess: true
+    publicAccess: false
+  id: "<vpc-id>"
+  securityGroup: <ControlPlaneSecurityGroup>
+  sharedNodeSecurityGroup: <SharedNodeSecurityGroup>
+  subnets:
+    public:
+      us-east-1a:
+          id: "<PublicSubnet01>"
+      us-east-1b:
+          id: "<PublicSubnet02>"
+    private:
+      us-east-1a:
+          id: "<PrivateSubnet01>"
+      us-east-1b:
+          id: "<PrivateSubnet02>"       
+
+# To enable all of the control plane logs, uncomment below:
+cloudWatch:
+  clusterLogging:
+    enableTypes: ["*"]
+
+secretsEncryption:
+  keyARN: <eks-kms-arn>
